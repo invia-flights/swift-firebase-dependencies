@@ -13,6 +13,10 @@ let package = Package(
 			name: "SwiftFirebaseAnalytics",
 			targets: ["SwiftFirebaseAnalytics"]
 		),
+		.library(
+			name: "SwiftFirebaseAnalyticsLive",
+			targets: ["SwiftFirebaseAnalyticsLive"]
+		),
 	],
 	dependencies: [
 		.package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "10.4.0"),

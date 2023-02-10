@@ -7,15 +7,36 @@ import Foundation
 /// unique name. Event names can be up to 40 characters long, may only contain alphanumeric
 /// characters and underscores ("_"), and must start with an alphabetic character. The "firebase_",
 /// "google_", and "ga_" prefixes are reserved and should not be used.
-public enum Event<Item: Equatable>: Equatable {
+public enum Event: Equatable {
 	public struct Custom: Equatable {
-		public init(name: String, parameters: [String : NSObject]) {
+		public enum Value: Equatable {
+			case string(String)
+			case double(Double)
+			case int(Int)
+			case bool(Bool)
+			case array([Value])
+			case dictionary([String:Value])
+		}
+		
+		static let validEventNameRegularExpression = try! NSRegularExpression(pattern: "/^(?!google_|ga_|firebase_)[A-Za-z0-9_]*/gm")
+
+		static func isEventNameValid(_ name: String) -> Bool {
+			let range = NSRange(location: 0, length: name.utf16.count)
+			return Self.validEventNameRegularExpression.firstMatch(in: name, range: range) != nil
+		}
+		
+		public init(name: String, parameters: [String : Value?] = [:]) throws {
+			guard Self.isEventNameValid(name) else {
+				struct InvalidName: Error {}
+				throw InvalidName()
+			}
+			
 			self.name = name
 			self.parameters = parameters
 		}
 		
 		public let name: String
-		public let parameters: [String: NSObject]
+		public let parameters: [String: Value?]
 	}
 
 	public struct Value: Equatable {
@@ -29,7 +50,7 @@ public enum Event<Item: Equatable>: Equatable {
 	}
 
 	public struct AdImpression: Equatable {
-		public init(adPlatform: String? = nil, adFormat: String? = nil, adSource: String? = nil, adUnitName: String? = nil, value: Event<Item>.Value? = nil) {
+		public init(adPlatform: String? = nil, adFormat: String? = nil, adSource: String? = nil, adUnitName: String? = nil, value: Event.Value? = nil) {
 			self.adPlatform = adPlatform
 			self.adFormat = adFormat
 			self.adSource = adSource
@@ -46,7 +67,7 @@ public enum Event<Item: Equatable>: Equatable {
 	
 
 	public struct AddPaymentInfo: Equatable {
-		public init(coupon: String, items: [[String : Item]], paymentType: String, value: Event<Item>.Value? = nil) {
+		public init(coupon: String, items: [[String : Value]], paymentType: String, value: Event.Value? = nil) {
 			self.coupon = coupon
 			self.items = items
 			self.paymentType = paymentType
@@ -54,13 +75,13 @@ public enum Event<Item: Equatable>: Equatable {
 		}
 		
 		public let coupon: String
-		public let items: [[String: Item]]
+		public let items: [[String: Value]]
 		public let paymentType: String
 		public let value: Value?
 	}
 
 	public struct AddShippingInfo: Equatable {
-		public init(coupon: String, items: [[String : Item]], shippingTier: String, value: Event<Item>.Value? = nil) {
+		public init(coupon: String, items: [[String : Value]], shippingTier: String, value: Event.Value? = nil) {
 			self.coupon = coupon
 			self.items = items
 			self.shippingTier = shippingTier
@@ -68,40 +89,40 @@ public enum Event<Item: Equatable>: Equatable {
 		}
 		
 		public let coupon: String
-		public let items: [[String: Item]]
+		public let items: [[String: Value]]
 		public let shippingTier: String
 		public let value: Value?
 	}
 
 	public struct AddToCart: Equatable {
-		public init(value: Event<Item>.Value? = nil, items: [[String : Item]]) {
+		public init(value: Event.Value? = nil, items: [[String : Value]]) {
 			self.value = value
 			self.items = items
 		}
 		
 		public let value: Value?
-		public let items: [[String: Item]]
+		public let items: [[String: Value]]
 	}
 
 	public struct AddToWishList: Equatable {
-		public init(value: Event<Item>.Value? = nil, items: [[String : Item]]) {
+		public init(value: Event.Value? = nil, items: [[String : Value]]) {
 			self.value = value
 			self.items = items
 		}
 		
 		public let value: Value?
-		public let items: [[String: Item]]
+		public let items: [[String: Value]]
 	}
 
 	public struct BeginCheckout: Equatable {
-		public init(coupon: String, items: [[String : Item]], value: Event<Item>.Value? = nil) {
+		public init(coupon: String, items: [[String : Value]], value: Event.Value? = nil) {
 			self.coupon = coupon
 			self.items = items
 			self.value = value
 		}
 		
 		public let coupon: String
-		public let items: [[String: Item]]
+		public let items: [[String: Value]]
 		public let value: Value?
 	}
 
@@ -174,6 +195,11 @@ public enum Event<Item: Equatable>: Equatable {
 	}
 
 	public struct ScreenView: Equatable {
+		public init(screenClass: String, screenName: String) {
+			self.screenClass = screenClass
+			self.screenName = screenName
+		}
+		
 		public let screenClass: String
 		public let screenName: String
 	}
@@ -182,7 +208,7 @@ public enum Event<Item: Equatable>: Equatable {
 		public let affiliation: String?
 		public let coupon: String?
 		public let value: Value?
-		public let items: [[String: Item]]?
+		public let items: [[String: Value]]?
 		public let shipping: Double?
 		public let tax: Double?
 		public let transactionID: String?
@@ -194,7 +220,7 @@ public enum Event<Item: Equatable>: Equatable {
 		public let value: Value?
 		public let endDate: Date?
 		public let itemID: String?
-		public let items: [[String: Item]]
+		public let items: [[String: Value]]
 		public let shipping: Double
 		public let startDate: Date?
 		public let tax: Double?
@@ -218,7 +244,7 @@ public enum Event<Item: Equatable>: Equatable {
 	}
 
 	public struct SelectItem: Equatable {
-		public let items: [[String: Item]]
+		public let items: [[String: Value]]
 		public let itemListID: String?
 		public let itemListName: String?
 	}
@@ -226,7 +252,7 @@ public enum Event<Item: Equatable>: Equatable {
 	public struct SelectPromotion: Equatable {
 		public let creativeName: String?
 		public let creativeSlot: String?
-		public let parameterItems: [[String: Item]]?
+		public let parameterItems: [[String: Value]]?
 		public let locationID: String?
 		public let promotionID: String?
 		public let promotionName: String?
@@ -256,17 +282,17 @@ public enum Event<Item: Equatable>: Equatable {
 	}
 
 	public struct ViewCart: Equatable {
-		public let items: [[String: Item]]?
+		public let items: [[String: Value]]?
 		public let value: Value?
 	}
 
 	public struct ViewItem: Equatable {
-		public let items: [[String: Item]]?
+		public let items: [[String: Value]]?
 		public let value: Value?
 	}
 
 	public struct ViewItemList: Equatable {
-		public let items: [[String: Item]]?
+		public let items: [[String: Value]]?
 		public let itemListID: String?
 		public let itemListName: String?
 	}
@@ -274,7 +300,7 @@ public enum Event<Item: Equatable>: Equatable {
 	public struct ViewPromotion: Equatable {
 		public let creativeName: String ///     <li>@c AnalyticsParameterCreativeName (String) (optional)</li>
 		public let creativeSlot: String ///     <li>@c AnalyticsParameterCreativeSlot (String) (optional)</li>
-		public let parameterItems: [[String: Item]]? ///     <li>@c AnalyticsParameterItems ([[String: Any]])
+		public let parameterItems: [[String: Value]]? ///     <li>@c AnalyticsParameterItems ([[String: Any]])
 		/// (optional)</li>
 		public let locationID: String?
 		public let promotionID: String?

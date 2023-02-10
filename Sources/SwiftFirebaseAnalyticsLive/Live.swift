@@ -1,14 +1,23 @@
 import FirebaseAnalytics
 import SwiftFirebaseAnalytics
+import Dependencies
 
-extension FirebaseTracking {
+public extension FirebaseAnalyticsClient {
 	static var live: Self {
 		.init(
 			log: { event in
 				Analytics.logEvent(event.name, parameters: event.parameters)
+			},
+			
+			setAnalyticsCollectionEnabled: { enabled in
+				Analytics.setAnalyticsCollectionEnabled(enabled)
 			}
 		)
 	}
+}
+
+extension FirebaseAnalyticsClient: DependencyKey {
+	public static var liveValue: FirebaseAnalyticsClient = .live
 }
 
 extension Event {
@@ -90,11 +99,42 @@ extension Event {
 	}
 }
 
+func transform(_ element: Event.Custom.Value) -> Any? {
+	switch element {
+	case .string(let string):
+		return string
+	case .double(let double):
+		return double
+	case .int(let int):
+		return int
+	case .bool(let bool):
+		return bool
+	case .array(let array):
+		return array
+	case .dictionary(let dictionary):
+		return dictionary
+	}
+}
+
+func transform(_ elements: [Event.Custom.Value]) -> [Any] {
+	elements.compactMap { transform($0) }
+}
+
+func transform(_ dict: [String:Event.Custom.Value?]) -> [String:Any] {
+	dict.compactMapValues {
+		guard let value = $0 else {
+			return nil
+		}
+			
+		return transform(value)
+	}
+}
+
 extension Event {
 	var parameters: [String: Any]? {
 		switch self {
 		case .custom(let custom):
-			return custom.parameters
+			return transform(custom.parameters)
 		case .adImpression(let adImpression):
 			return adImpression.parameters
 		case .addPaymentInfo(let addPaymentInfo):
@@ -140,31 +180,31 @@ extension Event {
 		case .selectContent(let selectContent):
 			return selectContent.parameters
 		case .selectItem(let selectItem):
-			return nil
+			return selectItem.parameters
 		case .selectPromotion(let selectPromotion):
-			return nil
+			return selectPromotion.parameters
 		case .share(let share):
-			return nil
+			return share.parameters
 		case .signUp(let signUp):
-			return nil
+			return signUp.parameters
 		case .spendVirtualCurrency(let spendVirtualCurrency):
-			return nil
+			return spendVirtualCurrency.parameters
 		case .tutorialBegin:
 			return nil
 		case .tutorialComplete:
 			return nil
 		case .unlockAchievement(let unlockAchievement):
-			return nil
+			return unlockAchievement.parameters
 		case .viewCart(let viewCart):
-			return nil
+			return viewCart.parameters
 		case .viewItem(let viewItem):
-			return nil
+			return viewItem.parameters
 		case .viewItemList(let viewItemList):
-			return nil
+			return viewItemList.parameters
 		case .viewPromotion(let viewPromotion):
-			return nil
+			return viewPromotion.parameters
 		case .viewSearchResults(let viewSearchResults):
-			return nil
+			return viewSearchResults.parameters
 		}
 	}
 }
