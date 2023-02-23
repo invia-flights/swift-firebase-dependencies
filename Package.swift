@@ -4,18 +4,18 @@
 import PackageDescription
 
 let package = Package(
-	name: "SwiftFirebaseAnalytics",
+	name: "FirebaseDependency",
 	platforms: [.iOS(.v15), .macOS(.v13)],
 	products: [
 		// Products define the executables and libraries a package produces, and make them visible to
 		// other packages.
 		.library(
-			name: "SwiftFirebaseAnalytics",
-			targets: ["SwiftFirebaseAnalytics"]
+			name: "FirebaseAnalyticsDependency",
+			targets: ["FirebaseAnalyticsDependency"]
 		),
 		.library(
-			name: "SwiftFirebaseAnalyticsLive",
-			targets: ["SwiftFirebaseAnalyticsLive"]
+			name: "FirebaseAnalyticsDependencyLive",
+			targets: ["FirebaseAnalyticsDependencyLive"]
 		),
 	],
 	dependencies: [
@@ -28,21 +28,21 @@ let package = Package(
 		// Targets can depend on other targets in this package, and on products in packages this package
 		// depends on.
 		.target(
-			name: "SwiftFirebaseAnalytics",
+			name: "FirebaseAnalyticsDependency",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 			]
 		),
 		.target(
-			name: "SwiftFirebaseAnalyticsLive",
+			name: "FirebaseAnalyticsDependencyLive",
 			dependencies: [
-				"SwiftFirebaseAnalytics",
+				"FirebaseAnalyticsDependency",
 				.product(name: "FirebaseAnalytics", package: "firebase-ios-sdk"),
 			]
 		),
 		.testTarget(
-			name: "SwiftFirebaseAnalyticsTests",
-			dependencies: ["SwiftFirebaseAnalytics"]
+			name: "FirebaseAnalyticsDependencyTests",
+			dependencies: ["FirebaseAnalyticsDependencyLive"]
 		),
 	]
 )

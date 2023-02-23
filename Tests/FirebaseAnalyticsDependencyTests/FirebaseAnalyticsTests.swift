@@ -1,5 +1,5 @@
 import XCTest
-@testable import SwiftFirebaseAnalytics
+@testable import FirebaseAnalyticsDependencyLive
 
 final class FirebaseAnalyticsTests: XCTestCase {
 	func testExample() throws {}
