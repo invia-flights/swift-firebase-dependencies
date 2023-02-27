@@ -15,26 +15,27 @@ public enum Event: Equatable {
 			case int(Int)
 			case bool(Bool)
 			case array([Value])
-			case dictionary([String:Value])
+			case dictionary([String: Value])
 		}
-		
-		static let validEventNameRegularExpression = try! NSRegularExpression(pattern: "/^(?!google_|ga_|firebase_)[A-Za-z0-9_]*/gm")
+
+		static let validEventNameRegularExpression =
+			try! NSRegularExpression(pattern: "/^(?!google_|ga_|firebase_)[A-Za-z0-9_]*/gm")
 
 		static func isEventNameValid(_ name: String) -> Bool {
 			let range = NSRange(location: 0, length: name.utf16.count)
 			return Self.validEventNameRegularExpression.firstMatch(in: name, range: range) != nil
 		}
-		
-		public init(name: String, parameters: [String : Value?] = [:]) throws {
+
+		public init(name: String, parameters: [String: Value?] = [:]) throws {
 			guard Self.isEventNameValid(name) else {
 				struct InvalidName: Error {}
 				throw InvalidName()
 			}
-			
+
 			self.name = name
 			self.parameters = parameters
 		}
-		
+
 		public let name: String
 		public let parameters: [String: Value?]
 	}
@@ -44,36 +45,46 @@ public enum Event: Equatable {
 			self.amount = amount
 			self.currency = currency
 		}
-		
+
 		public let amount: Double
 		public let currency: String
 	}
 
 	public struct AdImpression: Equatable {
-		public init(adPlatform: String? = nil, adFormat: String? = nil, adSource: String? = nil, adUnitName: String? = nil, value: Event.Value? = nil) {
+		public init(
+			adPlatform: String? = nil,
+			adFormat: String? = nil,
+			adSource: String? = nil,
+			adUnitName: String? = nil,
+			value: Event.Value? = nil
+		) {
 			self.adPlatform = adPlatform
 			self.adFormat = adFormat
 			self.adSource = adSource
 			self.adUnitName = adUnitName
 			self.value = value
 		}
-		
+
 		public let adPlatform: String?
 		public let adFormat: String?
 		public let adSource: String?
 		public let adUnitName: String?
 		public let value: Value?
 	}
-	
 
 	public struct AddPaymentInfo: Equatable {
-		public init(coupon: String, items: [[String : Value]], paymentType: String, value: Event.Value? = nil) {
+		public init(
+			coupon: String,
+			items: [[String: Value]],
+			paymentType: String,
+			value: Event.Value? = nil
+		) {
 			self.coupon = coupon
 			self.items = items
 			self.paymentType = paymentType
 			self.value = value
 		}
-		
+
 		public let coupon: String
 		public let items: [[String: Value]]
 		public let paymentType: String
@@ -81,13 +92,18 @@ public enum Event: Equatable {
 	}
 
 	public struct AddShippingInfo: Equatable {
-		public init(coupon: String, items: [[String : Value]], shippingTier: String, value: Event.Value? = nil) {
+		public init(
+			coupon: String,
+			items: [[String: Value]],
+			shippingTier: String,
+			value: Event.Value? = nil
+		) {
 			self.coupon = coupon
 			self.items = items
 			self.shippingTier = shippingTier
 			self.value = value
 		}
-		
+
 		public let coupon: String
 		public let items: [[String: Value]]
 		public let shippingTier: String
@@ -95,32 +111,32 @@ public enum Event: Equatable {
 	}
 
 	public struct AddToCart: Equatable {
-		public init(value: Event.Value? = nil, items: [[String : Value]]) {
+		public init(value: Event.Value? = nil, items: [[String: Value]]) {
 			self.value = value
 			self.items = items
 		}
-		
+
 		public let value: Value?
 		public let items: [[String: Value]]
 	}
 
 	public struct AddToWishList: Equatable {
-		public init(value: Event.Value? = nil, items: [[String : Value]]) {
+		public init(value: Event.Value? = nil, items: [[String: Value]]) {
 			self.value = value
 			self.items = items
 		}
-		
+
 		public let value: Value?
 		public let items: [[String: Value]]
 	}
 
 	public struct BeginCheckout: Equatable {
-		public init(coupon: String, items: [[String : Value]], value: Event.Value? = nil) {
+		public init(coupon: String, items: [[String: Value]], value: Event.Value? = nil) {
 			self.coupon = coupon
 			self.items = items
 			self.value = value
 		}
-		
+
 		public let coupon: String
 		public let items: [[String: Value]]
 		public let value: Value?
@@ -130,12 +146,24 @@ public enum Event: Equatable {
 		public init(searchTerm: String) {
 			self.searchTerm = searchTerm
 		}
-		
+
 		public let searchTerm: String
 	}
 
 	public struct CampaignDetails: Equatable {
-		public init(source: String, medium: String, campaign: String, term: String? = nil, content: String? = nil, adNetworkClickID: String? = nil, cp1: String? = nil, campaignID: String? = nil, creativeFormat: String? = nil, marketingTactic: String? = nil, sourcePlatform: String? = nil) {
+		public init(
+			source: String,
+			medium: String,
+			campaign: String,
+			term: String? = nil,
+			content: String? = nil,
+			adNetworkClickID: String? = nil,
+			cp1: String? = nil,
+			campaignID: String? = nil,
+			creativeFormat: String? = nil,
+			marketingTactic: String? = nil,
+			sourcePlatform: String? = nil
+		) {
 			self.source = source
 			self.medium = medium
 			self.campaign = campaign
@@ -148,7 +176,7 @@ public enum Event: Equatable {
 			self.marketingTactic = marketingTactic
 			self.sourcePlatform = sourcePlatform
 		}
-		
+
 		public let source: String
 		public let medium: String
 		public let campaign: String
@@ -199,7 +227,7 @@ public enum Event: Equatable {
 			self.screenClass = screenClass
 			self.screenName = screenName
 		}
-		
+
 		public let screenClass: String
 		public let screenName: String
 	}
@@ -298,9 +326,12 @@ public enum Event: Equatable {
 	}
 
 	public struct ViewPromotion: Equatable {
-		public let creativeName: String ///     <li>@c AnalyticsParameterCreativeName (String) (optional)</li>
-		public let creativeSlot: String ///     <li>@c AnalyticsParameterCreativeSlot (String) (optional)</li>
-		public let parameterItems: [[String: Value]]? ///     <li>@c AnalyticsParameterItems ([[String: Any]])
+		public let creativeName: String ///     <li>@c AnalyticsParameterCreativeName (String)
+		/// (optional)</li>
+		public let creativeSlot: String ///     <li>@c AnalyticsParameterCreativeSlot (String)
+		/// (optional)</li>
+		public let parameterItems: [[String: Value]]? ///     <li>@c AnalyticsParameterItems ([[String:
+		/// Any]])
 		/// (optional)</li>
 		public let locationID: String?
 		public let promotionID: String?

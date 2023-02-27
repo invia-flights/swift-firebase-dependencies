@@ -1,13 +1,16 @@
-import Foundation
 import Dependencies
+import Foundation
 import XCTestDynamicOverlay
 
 public struct FirebaseAnalyticsClient {
-	public init(log: @escaping (Event) async throws -> Void, setAnalyticsCollectionEnabled: @escaping (Bool) -> Void) {
+	public init(
+		log: @escaping (Event) async throws -> Void,
+		setAnalyticsCollectionEnabled: @escaping (Bool) -> Void
+	) {
 		self.log = log
 		self.setAnalyticsCollectionEnabled = setAnalyticsCollectionEnabled
 	}
-	
+
 	public var log: (Event) async throws -> Void
 	public var setAnalyticsCollectionEnabled: (Bool) -> Void
 }

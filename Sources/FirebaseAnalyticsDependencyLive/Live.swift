@@ -1,6 +1,6 @@
+import Dependencies
 import FirebaseAnalytics
 import FirebaseAnalyticsDependency
-import Dependencies
 
 public extension FirebaseAnalyticsClient {
 	static var live: Self {
@@ -8,7 +8,7 @@ public extension FirebaseAnalyticsClient {
 			log: { event in
 				Analytics.logEvent(event.name, parameters: event.parameters)
 			},
-			
+
 			setAnalyticsCollectionEnabled: { enabled in
 				Analytics.setAnalyticsCollectionEnabled(enabled)
 			}
@@ -25,75 +25,75 @@ extension Event {
 		switch self {
 		case let .custom(event):
 			return event.name
-		case .adImpression(_):
+		case .adImpression:
 			return AnalyticsEventAdImpression
-		case .addPaymentInfo(_):
+		case .addPaymentInfo:
 			return AnalyticsEventAddPaymentInfo
-		case .addShippingInfo(_):
+		case .addShippingInfo:
 			return AnalyticsEventAddShippingInfo
-		case .addToCart(_):
+		case .addToCart:
 			return AnalyticsEventAddToCart
-		case .addToWishList(_):
+		case .addToWishList:
 			return AnalyticsEventAddToWishlist
 		case .appOpen:
 			return AnalyticsEventAppOpen
-		case .beginCheckout(_):
+		case .beginCheckout:
 			return AnalyticsEventBeginCheckout
-		case .campaignDetails(_):
+		case .campaignDetails:
 			return AnalyticsEventCampaignDetails
-		case .earnVirtualCurrency(_):
+		case .earnVirtualCurrency:
 			return AnalyticsEventEarnVirtualCurrency
-		case .generateLead(_):
+		case .generateLead:
 			return AnalyticsEventGenerateLead
-		case .joinGroup(_):
+		case .joinGroup:
 			return AnalyticsEventJoinGroup
-		case .levelEnd(_):
+		case .levelEnd:
 			return AnalyticsEventLevelEnd
-		case .levelStart(_):
+		case .levelStart:
 			return AnalyticsEventLevelStart
-		case .levelUp(_):
+		case .levelUp:
 			return AnalyticsEventLevelUp
 		case .login:
 			return AnalyticsEventLogin
-		case .postScore(_):
+		case .postScore:
 			return AnalyticsEventPostScore
-		case .purchase(_):
+		case .purchase:
 			return AnalyticsEventPurchase
-		case .refund(_):
+		case .refund:
 			return AnalyticsEventRefund
-		case .removeFromCart(_):
+		case .removeFromCart:
 			return AnalyticsEventRemoveFromCart
-		case .screenView(_):
+		case .screenView:
 			return AnalyticsEventScreenView
-		case .search(_):
+		case .search:
 			return AnalyticsEventSearch
-		case .selectContent(_):
+		case .selectContent:
 			return AnalyticsEventSelectContent
-		case .selectItem(_):
+		case .selectItem:
 			return AnalyticsEventSelectItem
-		case .selectPromotion(_):
+		case .selectPromotion:
 			return AnalyticsEventSelectPromotion
-		case .share(_):
+		case .share:
 			return AnalyticsEventShare
-		case .signUp(_):
+		case .signUp:
 			return AnalyticsEventSignUp
-		case .spendVirtualCurrency(_):
+		case .spendVirtualCurrency:
 			return AnalyticsEventSpendVirtualCurrency
 		case .tutorialBegin:
 			return AnalyticsEventTutorialBegin
 		case .tutorialComplete:
 			return AnalyticsEventTutorialComplete
-		case .unlockAchievement(_):
+		case .unlockAchievement:
 			return AnalyticsEventUnlockAchievement
-		case .viewCart(_):
+		case .viewCart:
 			return AnalyticsEventViewCart
-		case .viewItem(_):
+		case .viewItem:
 			return AnalyticsEventViewItem
-		case .viewItemList(_):
+		case .viewItemList:
 			return AnalyticsEventViewItemList
-		case .viewPromotion(_):
+		case .viewPromotion:
 			return AnalyticsEventViewPromotion
-		case .viewSearchResults(_):
+		case .viewSearchResults:
 			return AnalyticsEventViewSearchResults
 		}
 	}
@@ -101,17 +101,17 @@ extension Event {
 
 func transform(_ element: Event.Custom.Value) -> Any? {
 	switch element {
-	case .string(let string):
+	case let .string(string):
 		return string
-	case .double(let double):
+	case let .double(double):
 		return double
-	case .int(let int):
+	case let .int(int):
 		return int
-	case .bool(let bool):
+	case let .bool(bool):
 		return bool
-	case .array(let array):
+	case let .array(array):
 		return array
-	case .dictionary(let dictionary):
+	case let .dictionary(dictionary):
 		return dictionary
 	}
 }
@@ -120,12 +120,12 @@ func transform(_ elements: [Event.Custom.Value]) -> [Any] {
 	elements.compactMap { transform($0) }
 }
 
-func transform(_ dict: [String:Event.Custom.Value?]) -> [String:Any] {
+func transform(_ dict: [String: Event.Custom.Value?]) -> [String: Any] {
 	dict.compactMapValues {
 		guard let value = $0 else {
 			return nil
 		}
-			
+
 		return transform(value)
 	}
 }
@@ -133,77 +133,77 @@ func transform(_ dict: [String:Event.Custom.Value?]) -> [String:Any] {
 extension Event {
 	var parameters: [String: Any]? {
 		switch self {
-		case .custom(let custom):
+		case let .custom(custom):
 			return transform(custom.parameters)
-		case .adImpression(let adImpression):
+		case let .adImpression(adImpression):
 			return adImpression.parameters
-		case .addPaymentInfo(let addPaymentInfo):
+		case let .addPaymentInfo(addPaymentInfo):
 			return addPaymentInfo.parameters
-		case .addShippingInfo(let addShippingInfo):
+		case let .addShippingInfo(addShippingInfo):
 			return addShippingInfo.parameters
-		case .addToCart(let addToCart):
+		case let .addToCart(addToCart):
 			return addToCart.parameters
-		case .addToWishList(let addToWishList):
+		case let .addToWishList(addToWishList):
 			return addToWishList.parameters
 		case .appOpen:
 			return nil
-		case .beginCheckout(let beginCheckout):
+		case let .beginCheckout(beginCheckout):
 			return beginCheckout.parameters
-		case .campaignDetails(let campaignDetails):
+		case let .campaignDetails(campaignDetails):
 			return campaignDetails.parameters
-		case .earnVirtualCurrency(let earnVirtualCurrency):
+		case let .earnVirtualCurrency(earnVirtualCurrency):
 			return earnVirtualCurrency.parameters
-		case .generateLead(let generateLead):
+		case let .generateLead(generateLead):
 			return generateLead.parameters
-		case .joinGroup(let joinGroup):
+		case let .joinGroup(joinGroup):
 			return joinGroup.parameters
-		case .levelEnd(let levelEnd):
+		case let .levelEnd(levelEnd):
 			return levelEnd.parameters
-		case .levelStart(let levelStart):
+		case let .levelStart(levelStart):
 			return levelStart.parameters
-		case .levelUp(let levelUp):
+		case let .levelUp(levelUp):
 			return levelUp.parameters
 		case .login:
 			return nil
-		case .postScore(let postScore):
+		case let .postScore(postScore):
 			return postScore.parameters
-		case .purchase(let purchase):
+		case let .purchase(purchase):
 			return purchase.parameters
-		case .refund(let refund):
+		case let .refund(refund):
 			return refund.parameters
-		case .removeFromCart(let removeFromCart):
+		case let .removeFromCart(removeFromCart):
 			return removeFromCart.parameters
-		case .screenView(let screenView):
+		case let .screenView(screenView):
 			return screenView.parameters
-		case .search(let search):
+		case let .search(search):
 			return search.parameters
-		case .selectContent(let selectContent):
+		case let .selectContent(selectContent):
 			return selectContent.parameters
-		case .selectItem(let selectItem):
+		case let .selectItem(selectItem):
 			return selectItem.parameters
-		case .selectPromotion(let selectPromotion):
+		case let .selectPromotion(selectPromotion):
 			return selectPromotion.parameters
-		case .share(let share):
+		case let .share(share):
 			return share.parameters
-		case .signUp(let signUp):
+		case let .signUp(signUp):
 			return signUp.parameters
-		case .spendVirtualCurrency(let spendVirtualCurrency):
+		case let .spendVirtualCurrency(spendVirtualCurrency):
 			return spendVirtualCurrency.parameters
 		case .tutorialBegin:
 			return nil
 		case .tutorialComplete:
 			return nil
-		case .unlockAchievement(let unlockAchievement):
+		case let .unlockAchievement(unlockAchievement):
 			return unlockAchievement.parameters
-		case .viewCart(let viewCart):
+		case let .viewCart(viewCart):
 			return viewCart.parameters
-		case .viewItem(let viewItem):
+		case let .viewItem(viewItem):
 			return viewItem.parameters
-		case .viewItemList(let viewItemList):
+		case let .viewItemList(viewItemList):
 			return viewItemList.parameters
-		case .viewPromotion(let viewPromotion):
+		case let .viewPromotion(viewPromotion):
 			return viewPromotion.parameters
-		case .viewSearchResults(let viewSearchResults):
+		case let .viewSearchResults(viewSearchResults):
 			return viewSearchResults.parameters
 		}
 	}
@@ -217,11 +217,10 @@ extension Event.AdImpression {
 			AnalyticsParameterAdSource: adSource as Any,
 			AnalyticsParameterAdUnitName: adUnitName as Any,
 			AnalyticsParameterValue: value?.amount as Any,
-			AnalyticsParameterCurrency: value?.currency as Any
+			AnalyticsParameterCurrency: value?.currency as Any,
 		]
 	}
 }
-
 
 extension Event.AddPaymentInfo {
 	var parameters: [String: Any] {
@@ -230,7 +229,7 @@ extension Event.AddPaymentInfo {
 			AnalyticsParameterItems: items as Any,
 			AnalyticsParameterPaymentType: paymentType as Any,
 			AnalyticsParameterValue: value?.amount as Any,
-			AnalyticsParameterCurrency: value?.currency as Any
+			AnalyticsParameterCurrency: value?.currency as Any,
 		]
 	}
 }
@@ -242,7 +241,7 @@ extension Event.AddShippingInfo {
 			AnalyticsParameterItems: items as Any,
 			AnalyticsParameterShippingTier: shippingTier as Any,
 			AnalyticsParameterValue: value?.amount as Any,
-			AnalyticsParameterCurrency: value?.currency as Any
+			AnalyticsParameterCurrency: value?.currency as Any,
 		]
 	}
 }
@@ -252,7 +251,7 @@ extension Event.AddToCart {
 		[
 			AnalyticsParameterItems: items as Any,
 			AnalyticsParameterValue: value?.amount as Any,
-			AnalyticsParameterCurrency: value?.currency as Any
+			AnalyticsParameterCurrency: value?.currency as Any,
 		]
 	}
 }
@@ -262,7 +261,7 @@ extension Event.AddToWishList {
 		[
 			AnalyticsParameterItems: items as Any,
 			AnalyticsParameterValue: value?.amount as Any,
-			AnalyticsParameterCurrency: value?.currency as Any
+			AnalyticsParameterCurrency: value?.currency as Any,
 		]
 	}
 }
@@ -273,7 +272,7 @@ extension Event.BeginCheckout {
 			AnalyticsParameterCoupon: coupon as Any,
 			AnalyticsParameterItems: items as Any,
 			AnalyticsParameterValue: value?.amount as Any,
-			AnalyticsParameterCurrency: value?.currency as Any
+			AnalyticsParameterCurrency: value?.currency as Any,
 		]
 	}
 }
@@ -299,7 +298,7 @@ extension Event.CampaignDetails {
 			AnalyticsParameterCampaignID: campaignID as Any,
 			AnalyticsParameterCreativeFormat: creativeFormat as Any,
 			AnalyticsParameterMarketingTactic: marketingTactic as Any,
-			AnalyticsParameterSourcePlatform: sourcePlatform as Any
+			AnalyticsParameterSourcePlatform: sourcePlatform as Any,
 		]
 	}
 }
@@ -308,7 +307,7 @@ extension Event.EarnVirtualCurrency {
 	var parameters: [String: Any] {
 		[
 			AnalyticsParameterValue: value?.amount as Any,
-			AnalyticsParameterCurrency: value?.currency as Any
+			AnalyticsParameterCurrency: value?.currency as Any,
 		]
 	}
 }
@@ -317,7 +316,7 @@ extension Event.GenerateLead {
 	var parameters: [String: Any] {
 		[
 			AnalyticsParameterValue: value?.amount as Any,
-			AnalyticsParameterCurrency: value?.currency as Any
+			AnalyticsParameterCurrency: value?.currency as Any,
 		]
 	}
 }
@@ -325,7 +324,7 @@ extension Event.GenerateLead {
 extension Event.JoinGroup {
 	var parameters: [String: Any] {
 		[
-			AnalyticsParameterGroupID: groupID as Any
+			AnalyticsParameterGroupID: groupID as Any,
 		]
 	}
 }
@@ -334,7 +333,7 @@ extension Event.LevelEnd {
 	var parameters: [String: Any] {
 		[
 			AnalyticsParameterLevelName: levelName as Any,
-			AnalyticsParameterSuccess: success as Any
+			AnalyticsParameterSuccess: success as Any,
 		]
 	}
 }
@@ -361,7 +360,7 @@ extension Event.PostScore {
 		[
 			AnalyticsParameterScore: score as Any,
 			AnalyticsParameterLevel: level as Any,
-			AnalyticsParameterCharacter: character as Any
+			AnalyticsParameterCharacter: character as Any,
 		]
 	}
 }
@@ -385,7 +384,7 @@ extension Event.Refund {
 			AnalyticsParameterItems: items as Any,
 			AnalyticsParameterShipping: shipping as Any,
 			AnalyticsParameterTax: tax as Any,
-			AnalyticsParameterTransactionID: transactionID as Any
+			AnalyticsParameterTransactionID: transactionID as Any,
 		]
 	}
 }
@@ -403,7 +402,7 @@ extension Event.Purchase {
 			AnalyticsParameterShipping: shipping as Any,
 			AnalyticsParameterStartDate: startDate as Any,
 			AnalyticsParameterTax: tax as Any,
-			AnalyticsParameterTransactionID: transactionID as Any
+			AnalyticsParameterTransactionID: transactionID as Any,
 		]
 	}
 }
@@ -438,7 +437,7 @@ extension Event.SelectItem {
 		[
 			AnalyticsParameterItems: items as Any,
 			AnalyticsParameterItemListID: itemListID as Any,
-			AnalyticsParameterItemListName: itemListName as Any
+			AnalyticsParameterItemListName: itemListName as Any,
 		]
 	}
 }
@@ -451,7 +450,7 @@ extension Event.SelectPromotion {
 			AnalyticsParameterItems: parameterItems as Any,
 			AnalyticsParameterLocationID: locationID as Any,
 			AnalyticsParameterPromotionID: promotionID as Any,
-			AnalyticsParameterPromotionName: promotionName as Any
+			AnalyticsParameterPromotionName: promotionName as Any,
 		]
 	}
 }
@@ -538,7 +537,7 @@ extension Event.ViewPromotion {
 			AnalyticsParameterItems: parameterItems as Any,
 			AnalyticsParameterLocationID: locationID as Any,
 			AnalyticsParameterPromotionID: promotionID as Any,
-			AnalyticsParameterPromotionName: promotionName as Any
+			AnalyticsParameterPromotionName: promotionName as Any,
 		]
 	}
 }

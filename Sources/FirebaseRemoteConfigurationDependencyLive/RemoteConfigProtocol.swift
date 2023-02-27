@@ -1,13 +1,6 @@
-//
-//  File.swift
-//  
-//
-//  Created by Quico Moya on 27.02.23.
-//
-
-import Foundation
 import FirebaseRemoteConfig
 import FirebaseRemoteConfigurationDependency
+import Foundation
 
 public protocol RemoteConfigProtocol: AnyObject {
 	var configSettings: RemoteConfigSettings { get set }
