@@ -1,5 +1,5 @@
 import FirebaseAnalytics
-import SwiftFirebaseAnalytics
+import FirebaseAnalyticsDependency
 import Dependencies
 
 public extension FirebaseAnalyticsClient {
