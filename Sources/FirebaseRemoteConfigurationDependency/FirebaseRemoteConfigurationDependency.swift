@@ -1,54 +1,21 @@
 import Dependencies
 import Foundation
 
+/// Enumerated value that indicates the source of Remote Config data. Data can come from the Remote
+/// Config service, the DefaultConfig that is available when the app is first installed, or a static
+/// initialized value if data is not available from the service or DefaultConfig.
 public enum Source {
+	/// The data source is the Remote Config service.
 	case remote
+
+	/// The data source is the DefaultConfig defined for this app.
 	case `default`
+
+	/// The data doesn’t exist, return a static initialized value.
+	case `static`
 }
 
-/// Indicates whether updated data was successfully fetched.
-public enum FetchStatus {
-	/// Config has never been fetched.
-	case noFetchYet
-
-	/// Config fetch succeeded.
-	case success
-
-	/// Config fetch failed.
-	case failure
-
-	/// Config fetch was throttled.
-	case throttled
-}
-
-/// Indicates whether updated data was successfully fetched.
-public enum FetchAndActivateStatus {
-	case successFetchedFromRemote
-
-	case successUsingPreFetchedData
-
-	case error
-}
-
-/// A data structure that can be used to configure the fetch settings.
-public struct FetchSettings {
-	public let minimumInterval: TimeInterval?
-	public let timeout: TimeInterval?
-}
-
-public extension FirebaseRemoteConfigurationClient {
-	enum Error: Equatable {
-		/// Unknown or no error.
-		case unknown
-
-		/// Frequency of fetch requests exceeds throttled limit.
-		case throttled
-
-		/// Internal error that covers all internal HTTP errors.
-		case `internal`
-	}
-}
-
+/// A client for FIrebase’s remote configuration service.
 public struct FirebaseRemoteConfigurationClient: Sendable {
 	public init(
 		configure: @escaping @Sendable (FetchSettings) -> Void,
@@ -60,11 +27,11 @@ public struct FirebaseRemoteConfigurationClient: Sendable {
 		fetchWithExpirationDuration: @escaping @Sendable (TimeInterval) async throws -> FetchStatus,
 		fetchAndActivate: @escaping @Sendable () async throws -> FetchAndActivateStatus,
 		activate: @escaping @Sendable () async throws -> Bool,
-		stringForKey: @escaping @Sendable (String) -> String?,
-		numberForKey: @escaping @Sendable (String) -> NSNumber?,
-		dataForKey: @escaping @Sendable (String) -> Data?,
-		boolForKey: @escaping @Sendable (String) -> Bool?,
-		jsonForKey: @escaping @Sendable (String) -> JSONSerialization?
+		stringForKey: @escaping @Sendable (String, Source?) -> String?,
+		numberForKey: @escaping @Sendable (String, Source?) -> NSNumber?,
+		dataForKey: @escaping @Sendable (String, Source?) -> Data?,
+		boolForKey: @escaping @Sendable (String, Source?) -> Bool?,
+		jsonForKey: @escaping @Sendable (String, Source?) -> JSONSerialization?
 	) {
 		self.configure = configure
 		self.setDefaultsFromPlist = setDefaultsFromPlist
@@ -99,11 +66,11 @@ public struct FirebaseRemoteConfigurationClient: Sendable {
 
 	let activate: @Sendable () async throws -> Bool
 
-	let stringForKey: @Sendable (String) -> String?
-	let numberForKey: @Sendable (String) -> NSNumber?
-	let dataForKey: @Sendable (String) -> Data?
-	let boolForKey: @Sendable (String) -> Bool?
-	let jsonForKey: @Sendable (String) -> JSONSerialization?
+	let stringForKey: @Sendable (String, Source?) -> String?
+	let numberForKey: @Sendable (String, Source?) -> NSNumber?
+	let dataForKey: @Sendable (String, Source?) -> Data?
+	let boolForKey: @Sendable (String, Source?) -> Bool?
+	let jsonForKey: @Sendable (String, Source?) -> JSONSerialization?
 }
 
 extension FirebaseRemoteConfigurationClient: TestDependencyKey {

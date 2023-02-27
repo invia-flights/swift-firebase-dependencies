@@ -91,30 +91,24 @@ extension FirebaseRemoteConfigurationClient {
 				try await remoteConfig.activate()
 			},
 
-			stringForKey: { key in
-				let value = remoteConfig.configValue(forKey: key)
-				return value.stringValue
+			stringForKey: { key, source in
+				remoteConfig.configValue(key: key, source: source).stringValue
 			},
 
-			numberForKey: { key in
-				let value = remoteConfig.configValue(forKey: key)
-				return value.numberValue
+			numberForKey: { key, source in
+				remoteConfig.configValue(key: key, source: source).numberValue
 			},
 
-			dataForKey: { key in
-				let value = remoteConfig.configValue(forKey: key)
-				return value.dataValue
+			dataForKey: { key, source in
+				remoteConfig.configValue(key: key, source: source).dataValue
 			},
 
-			boolForKey: { key in
-				let value = remoteConfig.configValue(forKey: key)
-				let boolValue = value.boolValue
-				return boolValue
+			boolForKey: { key, source in
+				remoteConfig.configValue(key: key, source: source).boolValue
 			},
 
-			jsonForKey: { key in
-				let value = remoteConfig.configValue(forKey: key)
-				return value.jsonValue as? JSONSerialization
+			jsonForKey: { key, source in
+				remoteConfig.configValue(key: key, source: source).jsonValue as? JSONSerialization
 			}
 		)
 	}
@@ -128,3 +122,16 @@ extension FirebaseRemoteConfigurationClient: DependencyKey {
 }
 
 extension RemoteConfig: RemoteConfigProtocol {}
+
+private extension RemoteConfigProtocol {
+	func configValue(key: String, source: Source?) -> RemoteConfigValue {
+		let value: RemoteConfigValue
+		switch source {
+		case .none, .some(.default):
+			value = configValue(forKey: key, source: .default)
+		case .some(.remote):
+			value = configValue(forKey: key, source: .remote)
+		}
+		return value
+	}
+}

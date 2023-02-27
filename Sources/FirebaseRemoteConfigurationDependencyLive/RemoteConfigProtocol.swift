@@ -8,7 +8,7 @@ public protocol RemoteConfigProtocol: AnyObject {
 	var lastFetchTime: Date? { get }
 	var lastFetchStatus: RemoteConfigFetchStatus { get }
 	func ensureInitialized() async throws
-	func configValue(forKey key: String?) -> RemoteConfigValue
+	func configValue(forKey key: String?, source: RemoteConfigSource) -> RemoteConfigValue
 	func fetch() async throws -> RemoteConfigFetchStatus
 	func fetch(withExpirationDuration duration: TimeInterval) async throws -> RemoteConfigFetchStatus
 	func fetchAndActivate() async throws -> RemoteConfigFetchAndActivateStatus
