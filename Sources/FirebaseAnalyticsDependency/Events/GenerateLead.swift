@@ -1,5 +1,5 @@
-extension Event {
-  public struct GenerateLead: Equatable {
-    public let value: Money?
-  }
+public extension Event {
+	struct GenerateLead: Equatable {
+		public let value: Money?
+	}
 }

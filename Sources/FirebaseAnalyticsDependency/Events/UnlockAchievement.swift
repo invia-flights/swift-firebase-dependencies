@@ -1,5 +1,5 @@
-extension Event {
-  public struct UnlockAchievement: Equatable {
-    public let achievementID: String
-  }
+public extension Event {
+	struct UnlockAchievement: Equatable {
+		public let achievementID: String
+	}
 }
