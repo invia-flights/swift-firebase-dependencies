@@ -8,7 +8,7 @@ Configuration and Firebase Analytics, with more features coming soon.
 
 ## Motivation
 
-The main motivation behind this library is supporting [`Dependencies`](https://github.com/pointfreeco/swift-dependencies). At
+The main motivation behind this package is supporting [`Dependencies`](https://github.com/pointfreeco/swift-dependencies). At
 [Invia Flights](https://www.invia.de/en/careers/), we’re big fans of [Stephen and Brandon’s work](https://pointfree.co), and we’re
 convinced that `Dependencies` is going to turn into the Swift de-facto standard
 for managing dependencies.
@@ -16,7 +16,7 @@ for managing dependencies.
 We also wanted to solve a specific problem: importing 
 Firebase systematically breaks SwiftUI previews. By segregating interface and
 implementation —only the latter requires the original Firebase—, this 
-library provides you with a clean workaround. 
+package provides you with a clean workaround. 
 
 ## Usage
 
@@ -38,4 +38,4 @@ And then adding the product to any target that needs access to the individual li
 
 ## License
 
-This library is released under the MIT license. See [LICENSE](LICENSE) for details.
+This package is released under the MIT license. See [LICENSE](LICENSE) for details.
