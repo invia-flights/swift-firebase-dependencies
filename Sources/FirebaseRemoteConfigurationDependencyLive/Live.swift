@@ -3,15 +3,15 @@ import FirebaseRemoteConfig
 import FirebaseRemoteConfigurationDependency
 import Foundation
 
-extension FirebaseRemoteConfigurationClient {
+extension FirebaseRemoteConfigClient {
 	static func live(remoteConfig: RemoteConfigProtocol) -> Self {
 		.init(
 			configure: { settings in
 				let remoteConfigSettings = RemoteConfigSettings()
-				if let minimumInterval = settings.minimumInterval {
+				if let minimumInterval = settings.minimumFetchInterval {
 					remoteConfigSettings.minimumFetchInterval = minimumInterval
 				}
-				if let timeout = settings.timeout {
+				if let timeout = settings.fetchTimeout {
 					remoteConfigSettings.fetchTimeout = timeout
 				}
 				remoteConfig.configSettings = remoteConfigSettings
@@ -77,9 +77,9 @@ extension FirebaseRemoteConfigurationClient {
 			fetchAndActivate: {
 				switch try await remoteConfig.fetchAndActivate() {
 				case .successFetchedFromRemote:
-					return .successFetchedFromRemote
+					return .success(.fetchedFromRemote)
 				case .successUsingPreFetchedData:
-					return .successUsingPreFetchedData
+					return .success(.usingPreFetchedData)
 				case .error:
 					return .error
 				@unknown default:
@@ -108,14 +108,14 @@ extension FirebaseRemoteConfigurationClient {
 			},
 
 			jsonForKey: { key, source in
-				remoteConfig.configValue(key: key, source: source).jsonValue as? JSONSerialization
+				remoteConfig.configValue(key: key, source: source).jsonValue
 			}
 		)
 	}
 }
 
-extension FirebaseRemoteConfigurationClient: DependencyKey {
-	public static var liveValue: FirebaseRemoteConfigurationClient = .live(
+extension FirebaseRemoteConfigClient: DependencyKey {
+	public static var liveValue: FirebaseRemoteConfigClient = .live(
 		remoteConfig: RemoteConfig
 			.remoteConfig()
 	)
@@ -124,13 +124,15 @@ extension FirebaseRemoteConfigurationClient: DependencyKey {
 extension RemoteConfig: RemoteConfigProtocol {}
 
 private extension RemoteConfigProtocol {
-	func configValue(key: String, source: Source?) -> RemoteConfigValue {
-		let value: RemoteConfigValue
+	func configValue(key: String, source: FirebaseRemoteConfigClient.Source?) -> FirebaseRemoteConfig.RemoteConfigValue {
+		let value: FirebaseRemoteConfig.RemoteConfigValue
 		switch source {
 		case .none, .some(.default):
 			value = configValue(forKey: key, source: .default)
 		case .some(.remote):
 			value = configValue(forKey: key, source: .remote)
+		case .some(.static):
+			value = configValue(forKey: key, source: .static)
 		}
 		return value
 	}

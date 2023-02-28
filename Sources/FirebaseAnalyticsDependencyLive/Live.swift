@@ -3,21 +3,21 @@ import FirebaseAnalytics
 import FirebaseAnalyticsDependency
 
 public extension FirebaseAnalyticsClient {
-	static var live: Self {
+	static func live(analytics: AnalyticsProtocol = AnalyticsWrapper()) -> Self {
 		.init(
 			log: { event in
-				Analytics.logEvent(event.name, parameters: event.parameters)
+				analytics.logEvent(event.name, parameters: event.parameters)
 			},
 
 			setAnalyticsCollectionEnabled: { enabled in
-				Analytics.setAnalyticsCollectionEnabled(enabled)
+				analytics.setAnalyticsCollectionEnabled(enabled)
 			}
 		)
 	}
 }
 
 extension FirebaseAnalyticsClient: DependencyKey {
-	public static var liveValue: FirebaseAnalyticsClient = .live
+	public static var liveValue: FirebaseAnalyticsClient = .live()
 }
 
 extension Event {
@@ -226,7 +226,7 @@ extension Event.AddPaymentInfo {
 	var parameters: [String: Any] {
 		[
 			AnalyticsParameterCoupon: coupon as Any,
-			AnalyticsParameterItems: items as Any,
+			AnalyticsParameterItems: items.map(\.parameters),
 			AnalyticsParameterPaymentType: paymentType as Any,
 			AnalyticsParameterValue: value?.amount as Any,
 			AnalyticsParameterCurrency: value?.currency as Any,
@@ -238,7 +238,7 @@ extension Event.AddShippingInfo {
 	var parameters: [String: Any] {
 		[
 			AnalyticsParameterCoupon: coupon as Any,
-			AnalyticsParameterItems: items as Any,
+			AnalyticsParameterItems: items.map(\.parameters),
 			AnalyticsParameterShippingTier: shippingTier as Any,
 			AnalyticsParameterValue: value?.amount as Any,
 			AnalyticsParameterCurrency: value?.currency as Any,
@@ -249,7 +249,7 @@ extension Event.AddShippingInfo {
 extension Event.AddToCart {
 	var parameters: [String: Any] {
 		[
-			AnalyticsParameterItems: items as Any,
+			AnalyticsParameterItems: items.map(\.parameters),
 			AnalyticsParameterValue: value?.amount as Any,
 			AnalyticsParameterCurrency: value?.currency as Any,
 		]
@@ -259,7 +259,7 @@ extension Event.AddToCart {
 extension Event.AddToWishList {
 	var parameters: [String: Any] {
 		[
-			AnalyticsParameterItems: items as Any,
+			AnalyticsParameterItems: items.map(\.parameters),
 			AnalyticsParameterValue: value?.amount as Any,
 			AnalyticsParameterCurrency: value?.currency as Any,
 		]
@@ -270,7 +270,7 @@ extension Event.BeginCheckout {
 	var parameters: [String: Any] {
 		[
 			AnalyticsParameterCoupon: coupon as Any,
-			AnalyticsParameterItems: items as Any,
+			AnalyticsParameterItems: items.map(\.parameters),
 			AnalyticsParameterValue: value?.amount as Any,
 			AnalyticsParameterCurrency: value?.currency as Any,
 		]
@@ -381,7 +381,7 @@ extension Event.Refund {
 			AnalyticsParameterCoupon: coupon as Any,
 			AnalyticsParameterValue: value?.amount as Any,
 			AnalyticsParameterCurrency: value?.currency as Any,
-			AnalyticsParameterItems: items as Any,
+			AnalyticsParameterItems: items?.map(\.parameters) as Any,
 			AnalyticsParameterShipping: shipping as Any,
 			AnalyticsParameterTax: tax as Any,
 			AnalyticsParameterTransactionID: transactionID as Any,
@@ -398,7 +398,7 @@ extension Event.Purchase {
 			AnalyticsParameterCurrency: value?.currency as Any,
 			AnalyticsParameterEndDate: endDate as Any,
 			AnalyticsParameterItemID: itemID as Any,
-			AnalyticsParameterItems: items as Any,
+			AnalyticsParameterItems: items.map(\.parameters),
 			AnalyticsParameterShipping: shipping as Any,
 			AnalyticsParameterStartDate: startDate as Any,
 			AnalyticsParameterTax: tax as Any,
@@ -435,7 +435,7 @@ extension Event.Search {
 extension Event.SelectItem {
 	var parameters: [String: Any] {
 		[
-			AnalyticsParameterItems: items as Any,
+			AnalyticsParameterItems: items.map(\.parameters),
 			AnalyticsParameterItemListID: itemListID as Any,
 			AnalyticsParameterItemListName: itemListName as Any,
 		]
@@ -447,7 +447,7 @@ extension Event.SelectPromotion {
 		[
 			AnalyticsParameterCreativeName: creativeName as Any,
 			AnalyticsParameterCreativeSlot: creativeSlot as Any,
-			AnalyticsParameterItems: parameterItems as Any,
+			AnalyticsParameterItems: items?.map(\.parameters) as Any,
 			AnalyticsParameterLocationID: locationID as Any,
 			AnalyticsParameterPromotionID: promotionID as Any,
 			AnalyticsParameterPromotionName: promotionName as Any,
@@ -502,7 +502,7 @@ extension Event.UnlockAchievement {
 extension Event.ViewCart {
 	var parameters: [String: Any] {
 		[
-			AnalyticsParameterItems: items as Any,
+			AnalyticsParameterItems: items?.map(\.parameters) as Any,
 			AnalyticsParameterValue: value?.amount as Any,
 			AnalyticsParameterCurrency: value?.currency as Any,
 		]
@@ -512,7 +512,7 @@ extension Event.ViewCart {
 extension Event.ViewItem {
 	var parameters: [String: Any] {
 		[
-			AnalyticsParameterItems: items as Any,
+			AnalyticsParameterItems: items?.map(\.parameters) as Any,
 			AnalyticsParameterValue: value?.amount as Any,
 			AnalyticsParameterCurrency: value?.currency as Any,
 		]
@@ -522,7 +522,7 @@ extension Event.ViewItem {
 extension Event.ViewItemList {
 	var parameters: [String: Any] {
 		[
-			AnalyticsParameterItems: items as Any,
+			AnalyticsParameterItems: items?.map(\.parameters) as Any,
 			AnalyticsParameterItemListID: itemListID as Any,
 			AnalyticsParameterItemListName: itemListName as Any,
 		]
@@ -534,10 +534,25 @@ extension Event.ViewPromotion {
 		[
 			AnalyticsParameterCreativeName: creativeName as Any,
 			AnalyticsParameterCreativeSlot: creativeSlot as Any,
-			AnalyticsParameterItems: parameterItems as Any,
+			AnalyticsParameterItems: items?.map(\.parameters) as Any,
 			AnalyticsParameterLocationID: locationID as Any,
 			AnalyticsParameterPromotionID: promotionID as Any,
 			AnalyticsParameterPromotionName: promotionName as Any,
+		]
+	}
+}
+
+extension Item {
+	var parameters: [String:Any] {
+		[
+			AnalyticsParameterItemID: id as Any,
+			AnalyticsParameterItemName: name as Any,
+			AnalyticsParameterItemCategory: category as Any,
+			AnalyticsParameterItemVariant: variant as Any,
+			AnalyticsParameterItemBrand: brand as Any,
+			AnalyticsParameterPrice: price?.amount as Any,
+			AnalyticsParameterItemListID: listID as Any,
+			AnalyticsParameterItemListName: listName as Any
 		]
 	}
 }

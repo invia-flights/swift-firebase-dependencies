@@ -1,6 +1,6 @@
 import Foundation
 
-public extension FirebaseRemoteConfigurationClient {
+public extension FirebaseRemoteConfigClient {
 	enum Error: Equatable {
 		/// Unknown or no error.
 		case unknown

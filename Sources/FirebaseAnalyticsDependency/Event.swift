@@ -8,335 +8,64 @@ import Foundation
 /// characters and underscores ("_"), and must start with an alphabetic character. The "firebase_",
 /// "google_", and "ga_" prefixes are reserved and should not be used.
 public enum Event: Equatable {
-	public struct Custom: Equatable {
-		public enum Value: Equatable {
-			case string(String)
-			case double(Double)
-			case int(Int)
-			case bool(Bool)
-			case array([Value])
-			case dictionary([String: Value])
-		}
 
-		static let validEventNameRegularExpression =
-			try! NSRegularExpression(pattern: "/^(?!google_|ga_|firebase_)[A-Za-z0-9_]*/gm")
+	
 
-		static func isEventNameValid(_ name: String) -> Bool {
-			let range = NSRange(location: 0, length: name.utf16.count)
-			return Self.validEventNameRegularExpression.firstMatch(in: name, range: range) != nil
-		}
+	
 
-		public init(name: String, parameters: [String: Value?] = [:]) throws {
-			guard Self.isEventNameValid(name) else {
-				struct InvalidName: Error {}
-				throw InvalidName()
-			}
+	
 
-			self.name = name
-			self.parameters = parameters
-		}
+	
 
-		public let name: String
-		public let parameters: [String: Value?]
-	}
+	
 
-	public struct Value: Equatable {
-		public init(amount: Double, currency: String) {
-			self.amount = amount
-			self.currency = currency
-		}
+	
 
-		public let amount: Double
-		public let currency: String
-	}
+	
 
-	public struct AdImpression: Equatable {
-		public init(
-			adPlatform: String? = nil,
-			adFormat: String? = nil,
-			adSource: String? = nil,
-			adUnitName: String? = nil,
-			value: Event.Value? = nil
-		) {
-			self.adPlatform = adPlatform
-			self.adFormat = adFormat
-			self.adSource = adSource
-			self.adUnitName = adUnitName
-			self.value = value
-		}
+	
 
-		public let adPlatform: String?
-		public let adFormat: String?
-		public let adSource: String?
-		public let adUnitName: String?
-		public let value: Value?
-	}
+	
 
-	public struct AddPaymentInfo: Equatable {
-		public init(
-			coupon: String,
-			items: [[String: Value]],
-			paymentType: String,
-			value: Event.Value? = nil
-		) {
-			self.coupon = coupon
-			self.items = items
-			self.paymentType = paymentType
-			self.value = value
-		}
+	
 
-		public let coupon: String
-		public let items: [[String: Value]]
-		public let paymentType: String
-		public let value: Value?
-	}
+	
 
-	public struct AddShippingInfo: Equatable {
-		public init(
-			coupon: String,
-			items: [[String: Value]],
-			shippingTier: String,
-			value: Event.Value? = nil
-		) {
-			self.coupon = coupon
-			self.items = items
-			self.shippingTier = shippingTier
-			self.value = value
-		}
+	
 
-		public let coupon: String
-		public let items: [[String: Value]]
-		public let shippingTier: String
-		public let value: Value?
-	}
+	
 
-	public struct AddToCart: Equatable {
-		public init(value: Event.Value? = nil, items: [[String: Value]]) {
-			self.value = value
-			self.items = items
-		}
+	
 
-		public let value: Value?
-		public let items: [[String: Value]]
-	}
+	
 
-	public struct AddToWishList: Equatable {
-		public init(value: Event.Value? = nil, items: [[String: Value]]) {
-			self.value = value
-			self.items = items
-		}
+	
 
-		public let value: Value?
-		public let items: [[String: Value]]
-	}
+	
 
-	public struct BeginCheckout: Equatable {
-		public init(coupon: String, items: [[String: Value]], value: Event.Value? = nil) {
-			self.coupon = coupon
-			self.items = items
-			self.value = value
-		}
+	
 
-		public let coupon: String
-		public let items: [[String: Value]]
-		public let value: Value?
-	}
+	
 
-	public struct ViewSearchResults: Equatable {
-		public init(searchTerm: String) {
-			self.searchTerm = searchTerm
-		}
+	
 
-		public let searchTerm: String
-	}
+	
 
-	public struct CampaignDetails: Equatable {
-		public init(
-			source: String,
-			medium: String,
-			campaign: String,
-			term: String? = nil,
-			content: String? = nil,
-			adNetworkClickID: String? = nil,
-			cp1: String? = nil,
-			campaignID: String? = nil,
-			creativeFormat: String? = nil,
-			marketingTactic: String? = nil,
-			sourcePlatform: String? = nil
-		) {
-			self.source = source
-			self.medium = medium
-			self.campaign = campaign
-			self.term = term
-			self.content = content
-			self.adNetworkClickID = adNetworkClickID
-			self.cp1 = cp1
-			self.campaignID = campaignID
-			self.creativeFormat = creativeFormat
-			self.marketingTactic = marketingTactic
-			self.sourcePlatform = sourcePlatform
-		}
+	
 
-		public let source: String
-		public let medium: String
-		public let campaign: String
-		public let term: String?
-		public let content: String?
-		public let adNetworkClickID: String?
-		public let cp1: String?
-		public let campaignID: String?
-		public let creativeFormat: String?
-		public let marketingTactic: String?
-		public let sourcePlatform: String?
-	}
+	
 
-	public struct EarnVirtualCurrency: Equatable {
-		public let value: Value?
-	}
+	
 
-	public struct GenerateLead: Equatable {
-		public let value: Value?
-	}
+	
 
-	public struct JoinGroup: Equatable {
-		public let groupID: String
-	}
+	
 
-	public struct LevelEnd: Equatable {
-		public let levelName: String
-		public let success: String
-	}
+	
 
-	public struct LevelStart: Equatable {
-		public let levelName: String?
-	}
+	
 
-	public struct LevelUp: Equatable {
-		public let level: Int
-		public let character: String?
-	}
-
-	public struct PostScore: Equatable {
-		public let score: Int
-		public let level: Int?
-		public let character: String?
-	}
-
-	public struct ScreenView: Equatable {
-		public init(screenClass: String, screenName: String) {
-			self.screenClass = screenClass
-			self.screenName = screenName
-		}
-
-		public let screenClass: String
-		public let screenName: String
-	}
-
-	public struct Refund: Equatable {
-		public let affiliation: String?
-		public let coupon: String?
-		public let value: Value?
-		public let items: [[String: Value]]?
-		public let shipping: Double?
-		public let tax: Double?
-		public let transactionID: String?
-	}
-
-	public struct Purchase: Equatable {
-		public let affiliation: String?
-		public let coupon: String?
-		public let value: Value?
-		public let endDate: Date?
-		public let itemID: String?
-		public let items: [[String: Value]]
-		public let shipping: Double
-		public let startDate: Date?
-		public let tax: Double?
-		public let transactionID: String?
-	}
-
-	public struct RemoveFromCart: Equatable {
-		public let value: Value?
-	}
-
-	public struct Search: Equatable {
-		public let term: String
-		public let startDate: String?
-		public let endDate: String?
-		public let numberOfNights: Int?
-		public let numberOfRooms: Int?
-		public let numberOfPassengers: Int?
-		public let origin: String?
-		public let destination: String?
-		public let travelClass: String?
-	}
-
-	public struct SelectItem: Equatable {
-		public let items: [[String: Value]]
-		public let itemListID: String?
-		public let itemListName: String?
-	}
-
-	public struct SelectPromotion: Equatable {
-		public let creativeName: String?
-		public let creativeSlot: String?
-		public let parameterItems: [[String: Value]]?
-		public let locationID: String?
-		public let promotionID: String?
-		public let promotionName: String?
-	}
-
-	public struct SelectContent: Equatable {
-		public let contentType: String
-		public let itemID: String
-	}
-
-	public struct Share: Equatable {
-		public let contentType: String
-		public let itemID: String
-	}
-
-	public struct SignUp: Equatable {
-		public let method: String
-	}
-
-	public struct SpendVirtualCurrency: Equatable {
-		public let itemName: String
-		public let value: Value?
-	}
-
-	public struct UnlockAchievement: Equatable {
-		public let achievementID: String
-	}
-
-	public struct ViewCart: Equatable {
-		public let items: [[String: Value]]?
-		public let value: Value?
-	}
-
-	public struct ViewItem: Equatable {
-		public let items: [[String: Value]]?
-		public let value: Value?
-	}
-
-	public struct ViewItemList: Equatable {
-		public let items: [[String: Value]]?
-		public let itemListID: String?
-		public let itemListName: String?
-	}
-
-	public struct ViewPromotion: Equatable {
-		public let creativeName: String ///     <li>@c AnalyticsParameterCreativeName (String)
-		/// (optional)</li>
-		public let creativeSlot: String ///     <li>@c AnalyticsParameterCreativeSlot (String)
-		/// (optional)</li>
-		public let parameterItems: [[String: Value]]? ///     <li>@c AnalyticsParameterItems ([[String:
-		/// Any]])
-		/// (optional)</li>
-		public let locationID: String?
-		public let promotionID: String?
-		public let promotionName: String?
-	}
+	
 
 	case custom(Custom)
 
