@@ -39,11 +39,11 @@ jobs:
 
           for tag in $(echo "main"; git tag -l --sort=-v:refname | grep -e "\d\+\.\d\+.0" | head -6);
           do
-            if [ -d "docs-out/$tag/data/documentation/dependencies" ] 
+            if [ -d "docs-out/$tag/data/documentation/firebase-dependencies" ] 
             then 
               echo "✅ Documentation for "$tag" already exists.";
             else 
-              echo "⏳ Generating documentation for Dependencies @ "$tag" release.";
+              echo "⏳ Generating documentation for FirebaseDependencies @ "$tag" release.";
               rm -rf "docs-out/$tag";
 
               git checkout .;
@@ -52,12 +52,12 @@ jobs:
               swift package \
                 --allow-writing-to-directory docs-out/"$tag" \
                 generate-documentation \
-                --target Dependencies \
+                --target FirebaseDependencies \
                 --output-path docs-out/"$tag" \
                 --transform-for-static-hosting \
-                --hosting-base-path /swift-dependencies/"$tag" \
-                && echo "✅ Documentation generated for Dependencies @ "$tag" release." \
-                || echo "⚠️ Documentation skipped for Dependencies @ "$tag".";
+                --hosting-base-path /swift-firebase-dependencies/"$tag" \
+                && echo "✅ Documentation generated for FirebaseDependencies @ "$tag" release." \
+                || echo "⚠️ Documentation skipped for FirebaseDependencies @ "$tag".";
             fi;
           done
 
