@@ -1,6 +1,6 @@
-extension Event {
-  public struct LevelUp: Equatable {
-    public let level: Int
-    public let character: String?
-  }
+public extension Event {
+	struct LevelUp: Equatable {
+		public let level: Int
+		public let character: String?
+	}
 }
