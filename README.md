@@ -1,5 +1,7 @@
 # Firebase Dependencies
 
+![CI](https://github.com/invia-flights/swift-firebase-dependencies/actions/workflows/ci.yml/badge.svg)
+
 Firebase Dependencies is a Swift package that provides an idiomatic wrapper 
 around Firebase's iOS libraries. Currently, it supports Firebase Remote
 Configuration and Firebase Analytics, with more features coming soon.
