@@ -140,3 +140,10 @@ extension FirebaseRemoteConfigClient: TestDependencyKey {
 		jsonForKey: unimplemented("jsonForKey")
 	)
 }
+
+public extension DependencyValues {
+	var firebaseRemoteConfig: FirebaseRemoteConfigClient {
+		get { self[FirebaseRemoteConfigClient.self] }
+		set { self[FirebaseRemoteConfigClient.self] = newValue }
+	}
+}
