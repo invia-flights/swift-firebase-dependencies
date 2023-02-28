@@ -35,10 +35,6 @@ build-for-library-evolution:
 		-Xswiftc -enable-library-evolution
 
 format:
-	swift format \
-		--ignore-unparsable-files \
-		--in-place \
-		--recursive \
-		./Package.swift ./Sources ./Tests
+	swiftformat .
 
 .PHONY: test test-swift test-linux build-for-library-evolution format
