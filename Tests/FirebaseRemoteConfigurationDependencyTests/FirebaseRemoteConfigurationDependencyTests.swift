@@ -1,331 +1,334 @@
+import FirebaseRemoteConfig
 import XCTest
+
 @testable import FirebaseRemoteConfigurationDependency
 @testable import FirebaseRemoteConfigurationDependencyLive
-import FirebaseRemoteConfig
 
 final class FirebaseRemoteConfigClientTests: XCTestCase {
-	func testConfigure() throws {
-		let remoteConfig = TestRemoteConfig()
-		
-		var setSettings: RemoteConfigSettings?
-		remoteConfig._setRemoteConfigSettings = {
-			setSettings = $0
-		}
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
-		
-		sut.configure(.init(minimumFetchInterval: 1, fetchTimeout: 2))
-		
-		XCTAssertEqual(setSettings?.minimumFetchInterval, 1)
-		XCTAssertEqual(setSettings?.fetchTimeout, 2)
-	}
-	
-	func testLastFetchTime() {
-		let remoteConfig = TestRemoteConfig()
-		remoteConfig._getLastFetchTime = { .distantPast }
+  func testConfigure() throws {
+    let remoteConfig = TestRemoteConfig()
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+    var setSettings: RemoteConfigSettings?
+    remoteConfig._setRemoteConfigSettings = {
+      setSettings = $0
+    }
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
 
-		let result = sut.lastFetchTime()
-		
-		XCTAssertEqual(result, .distantPast)
-	}
-	
-	func testSetDefaultsFromPlist() {
-		let remoteConfig = TestRemoteConfig()
-		var plist: String?
-		remoteConfig._setDefaultsFromPlist = { plist = $0 }
+    sut.configure(.init(minimumFetchInterval: 1, fetchTimeout: 2))
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+    XCTAssertEqual(setSettings?.minimumFetchInterval, 1)
+    XCTAssertEqual(setSettings?.fetchTimeout, 2)
+  }
 
-		sut.setDefaultsFromPlist("test")
-		
-		XCTAssertEqual(plist, "test")
-	}
-	
-	func testLastFetchStatusIsNoFetchYet() {
-		let remoteConfig = TestRemoteConfig()
-		remoteConfig._getLastFetchStatus = { .noFetchYet }
+  func testLastFetchTime() {
+    let remoteConfig = TestRemoteConfig()
+    remoteConfig._getLastFetchTime = { .distantPast }
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
 
-		let result = sut.lastFetchStatus()
-		
-		XCTAssertEqual(result, .noFetchYet)
-	}
-	
-	func testLastFetchStatusIsSuccess() {
-		let remoteConfig = TestRemoteConfig()
-		remoteConfig._getLastFetchStatus = { .success }
+    let result = sut.lastFetchTime()
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+    XCTAssertEqual(result, .distantPast)
+  }
 
-		let result = sut.lastFetchStatus()
-		
-		XCTAssertEqual(result, .success)
-	}
-	
-	func testLastFetchStatusIsFailure() {
-		let remoteConfig = TestRemoteConfig()
-		remoteConfig._getLastFetchStatus = { .failure }
+  func testSetDefaultsFromPlist() {
+    let remoteConfig = TestRemoteConfig()
+    var plist: String?
+    remoteConfig._setDefaultsFromPlist = { plist = $0 }
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
 
-		let result = sut.lastFetchStatus()
-		
-		XCTAssertEqual(result, .failure)
-	}
-	
-	func testLastFetchStatusIsThrottled() {
-		let remoteConfig = TestRemoteConfig()
-		remoteConfig._getLastFetchStatus = { .throttled }
+    sut.setDefaultsFromPlist("test")
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+    XCTAssertEqual(plist, "test")
+  }
 
-		let result = sut.lastFetchStatus()
-		
-		XCTAssertEqual(result, .throttled)
-	}
-	
-	func testEnsureInitialized() async throws {
-		let remoteConfig = TestRemoteConfig()
-		var initialized = false
-		remoteConfig._ensureInitialized = { initialized = true }
+  func testLastFetchStatusIsNoFetchYet() {
+    let remoteConfig = TestRemoteConfig()
+    remoteConfig._getLastFetchStatus = { .noFetchYet }
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
 
-		try await sut.ensureInitialized()
-		
-		XCTAssert(initialized)
-	}
-	
-	func testFetchNoFetchYet() async throws {
-		let remoteConfig = TestRemoteConfig()
-		remoteConfig._fetch = { return .noFetchYet }
+    let result = sut.lastFetchStatus()
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+    XCTAssertEqual(result, .noFetchYet)
+  }
 
-		let result = try await sut.fetch()
-		
-		XCTAssertEqual(result, .noFetchYet)
-	}
-	
-	func testFetchSuccess() async throws {
-		let remoteConfig = TestRemoteConfig()
-		remoteConfig._fetch = { return .success }
+  func testLastFetchStatusIsSuccess() {
+    let remoteConfig = TestRemoteConfig()
+    remoteConfig._getLastFetchStatus = { .success }
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
 
-		let result = try await sut.fetch()
-		
-		XCTAssertEqual(result, .success)
-	}
-	
-	func testFetchFailure() async throws {
-		let remoteConfig = TestRemoteConfig()
-		remoteConfig._fetch = { return .failure }
+    let result = sut.lastFetchStatus()
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+    XCTAssertEqual(result, .success)
+  }
 
-		let result = try await sut.fetch()
-		
-		XCTAssertEqual(result, .failure)
-	}
-	
-	func testFetchThrottled() async throws {
-		let remoteConfig = TestRemoteConfig()
-		remoteConfig._fetch = { return .throttled }
+  func testLastFetchStatusIsFailure() {
+    let remoteConfig = TestRemoteConfig()
+    remoteConfig._getLastFetchStatus = { .failure }
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
 
-		let result = try await sut.fetch()
-		
-		XCTAssertEqual(result, .throttled)
-	}
-	
-	func testFetchWithExpirationDurationNoFetchYet() async throws {
-		let remoteConfig = TestRemoteConfig()
-		var receivedDuration: TimeInterval?
-		remoteConfig._fetchWithExpirationDuration = {
-			receivedDuration = $0
-			return .noFetchYet
-		}
+    let result = sut.lastFetchStatus()
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+    XCTAssertEqual(result, .failure)
+  }
 
-		let result = try await sut.fetchWithExpirationDuration(60)
-		
-		XCTAssertEqual(result, .noFetchYet)
-		XCTAssertEqual(receivedDuration, 60)
-	}
-	
-	func testFetchWithExpirationDurationSuccess() async throws {
-		let remoteConfig = TestRemoteConfig()
-		var receivedDuration: TimeInterval?
-		remoteConfig._fetchWithExpirationDuration = {
-			receivedDuration = $0
-			return .success
-		}
+  func testLastFetchStatusIsThrottled() {
+    let remoteConfig = TestRemoteConfig()
+    remoteConfig._getLastFetchStatus = { .throttled }
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
 
-		let result = try await sut.fetchWithExpirationDuration(60)
+    let result = sut.lastFetchStatus()
 
-		XCTAssertEqual(result, .success)
-		XCTAssertEqual(receivedDuration, 60)
-	}
-	
-	func testFetchWithExpirationDurationFailure() async throws {
-		let remoteConfig = TestRemoteConfig()
-		var receivedDuration: TimeInterval?
-		remoteConfig._fetchWithExpirationDuration = {
-			receivedDuration = $0
-			return .failure
-		}
+    XCTAssertEqual(result, .throttled)
+  }
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+  func testEnsureInitialized() async throws {
+    let remoteConfig = TestRemoteConfig()
+    var initialized = false
+    remoteConfig._ensureInitialized = { initialized = true }
 
-		let result = try await sut.fetchWithExpirationDuration(60)
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
 
-		XCTAssertEqual(result, .failure)
-		XCTAssertEqual(receivedDuration, 60)
-	}
-	
-	func testFetchWithExpirationDurationThrottled() async throws {
-		let remoteConfig = TestRemoteConfig()
-		var receivedDuration: TimeInterval?
-		remoteConfig._fetchWithExpirationDuration = {
-			receivedDuration = $0
-			return .throttled
-		}
+    try await sut.ensureInitialized()
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+    XCTAssert(initialized)
+  }
 
-		let result = try await sut.fetchWithExpirationDuration(60)
+  func testFetchNoFetchYet() async throws {
+    let remoteConfig = TestRemoteConfig()
+    remoteConfig._fetch = { return .noFetchYet }
 
-		XCTAssertEqual(result, .throttled)
-		XCTAssertEqual(receivedDuration, 60)
-	}
-	
-	func testActivate() async throws {
-		let remoteConfig = TestRemoteConfig()
-		remoteConfig._activate = { true }
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+    let result = try await sut.fetch()
 
-		let activated = try await sut.activate()
-		
-		XCTAssert(activated)
-	}
-	
-	func testStringForKey() async throws {
-		let remoteConfig = TestRemoteConfig()
-		var receivedKey: String?
-		var receivedSource: RemoteConfigSource?
-		
-		remoteConfig._configValue = { key, source in
-			receivedKey = key
-			receivedSource = source
-			let value = TestRemoteConfigValue()
-			value._stringValue = { "abc" }
-			return value
-		}
+    XCTAssertEqual(result, .noFetchYet)
+  }
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+  func testFetchSuccess() async throws {
+    let remoteConfig = TestRemoteConfig()
+    remoteConfig._fetch = { return .success }
 
-		let string = sut.stringForKey("k", .default)
-		
-		XCTAssertEqual(string, "abc")
-		XCTAssertEqual(receivedKey, "k")
-		XCTAssertEqual(receivedSource, .default)
-	}
-	
-	func testNumberForKey() async throws {
-		let remoteConfig = TestRemoteConfig()
-		var receivedKey: String?
-		var receivedSource: RemoteConfigSource?
-		
-		remoteConfig._configValue = { key, source in
-			receivedKey = key
-			receivedSource = source
-			let value = TestRemoteConfigValue()
-			value._numberValue = { 123 }
-			return value
-		}
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+    let result = try await sut.fetch()
 
-		let number = sut.numberForKey("k", .default)
-		
-		XCTAssertEqual(number, 123)
-		XCTAssertEqual(receivedKey, "k")
-		XCTAssertEqual(receivedSource, .default)
-	}
-	
-	func testDataForKey() async throws {
-		let remoteConfig = TestRemoteConfig()
-		var receivedKey: String?
-		var receivedSource: RemoteConfigSource?
-		
-		remoteConfig._configValue = { key, source in
-			receivedKey = key
-			receivedSource = source
-			let value = TestRemoteConfigValue()
-			value._dataValue = { .init() }
-			return value
-		}
+    XCTAssertEqual(result, .success)
+  }
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+  func testFetchFailure() async throws {
+    let remoteConfig = TestRemoteConfig()
+    remoteConfig._fetch = { return .failure }
 
-		let data = sut.dataForKey("k", .default)
-		
-		XCTAssertEqual(data, .init())
-		XCTAssertEqual(receivedKey, "k")
-		XCTAssertEqual(receivedSource, .default)
-	}
-	
-	func testBoolForKey() async throws {
-		let remoteConfig = TestRemoteConfig()
-		var receivedKey: String?
-		var receivedSource: RemoteConfigSource?
-		
-		remoteConfig._configValue = { key, source in
-			receivedKey = key
-			receivedSource = source
-			let value = TestRemoteConfigValue()
-			value._boolValue = { true }
-			return value
-		}
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+    let result = try await sut.fetch()
 
-		let bool = sut.boolForKey("k", .default)
-		
-		XCTAssertEqual(bool, true)
-		XCTAssertEqual(receivedKey, "k")
-		XCTAssertEqual(receivedSource, .default)
-	}
-	
-	func testJSONForKey() async throws {
-		let remoteConfig = TestRemoteConfig()
-		var receivedKey: String?
-		var receivedSource: RemoteConfigSource?
-		
-		let exampleJSON = try JSONSerialization.jsonObject(with: #"{"test":"test"}"#.data(using: .utf8)!) as? [String:String]
-		
-		remoteConfig._configValue = { key, source in
-			receivedKey = key
-			receivedSource = source
-			let value = TestRemoteConfigValue()
-			value._jsonValue = { exampleJSON as Any }
-			return value
-		}
+    XCTAssertEqual(result, .failure)
+  }
 
-		let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+  func testFetchThrottled() async throws {
+    let remoteConfig = TestRemoteConfig()
+    remoteConfig._fetch = { return .throttled }
 
-		let json = sut.jsonForKey("k", .default) as? [String:String]
-		
-		XCTAssertEqual(json, exampleJSON)
-		XCTAssertEqual(receivedKey, "k")
-		XCTAssertEqual(receivedSource, .default)
-	}
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+
+    let result = try await sut.fetch()
+
+    XCTAssertEqual(result, .throttled)
+  }
+
+  func testFetchWithExpirationDurationNoFetchYet() async throws {
+    let remoteConfig = TestRemoteConfig()
+    var receivedDuration: TimeInterval?
+    remoteConfig._fetchWithExpirationDuration = {
+      receivedDuration = $0
+      return .noFetchYet
+    }
+
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+
+    let result = try await sut.fetchWithExpirationDuration(60)
+
+    XCTAssertEqual(result, .noFetchYet)
+    XCTAssertEqual(receivedDuration, 60)
+  }
+
+  func testFetchWithExpirationDurationSuccess() async throws {
+    let remoteConfig = TestRemoteConfig()
+    var receivedDuration: TimeInterval?
+    remoteConfig._fetchWithExpirationDuration = {
+      receivedDuration = $0
+      return .success
+    }
+
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+
+    let result = try await sut.fetchWithExpirationDuration(60)
+
+    XCTAssertEqual(result, .success)
+    XCTAssertEqual(receivedDuration, 60)
+  }
+
+  func testFetchWithExpirationDurationFailure() async throws {
+    let remoteConfig = TestRemoteConfig()
+    var receivedDuration: TimeInterval?
+    remoteConfig._fetchWithExpirationDuration = {
+      receivedDuration = $0
+      return .failure
+    }
+
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+
+    let result = try await sut.fetchWithExpirationDuration(60)
+
+    XCTAssertEqual(result, .failure)
+    XCTAssertEqual(receivedDuration, 60)
+  }
+
+  func testFetchWithExpirationDurationThrottled() async throws {
+    let remoteConfig = TestRemoteConfig()
+    var receivedDuration: TimeInterval?
+    remoteConfig._fetchWithExpirationDuration = {
+      receivedDuration = $0
+      return .throttled
+    }
+
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+
+    let result = try await sut.fetchWithExpirationDuration(60)
+
+    XCTAssertEqual(result, .throttled)
+    XCTAssertEqual(receivedDuration, 60)
+  }
+
+  func testActivate() async throws {
+    let remoteConfig = TestRemoteConfig()
+    remoteConfig._activate = { true }
+
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+
+    let activated = try await sut.activate()
+
+    XCTAssert(activated)
+  }
+
+  func testStringForKey() async throws {
+    let remoteConfig = TestRemoteConfig()
+    var receivedKey: String?
+    var receivedSource: RemoteConfigSource?
+
+    remoteConfig._configValue = { key, source in
+      receivedKey = key
+      receivedSource = source
+      let value = TestRemoteConfigValue()
+      value._stringValue = { "abc" }
+      return value
+    }
+
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+
+    let string = sut.stringForKey("k", .default)
+
+    XCTAssertEqual(string, "abc")
+    XCTAssertEqual(receivedKey, "k")
+    XCTAssertEqual(receivedSource, .default)
+  }
+
+  func testNumberForKey() async throws {
+    let remoteConfig = TestRemoteConfig()
+    var receivedKey: String?
+    var receivedSource: RemoteConfigSource?
+
+    remoteConfig._configValue = { key, source in
+      receivedKey = key
+      receivedSource = source
+      let value = TestRemoteConfigValue()
+      value._numberValue = { 123 }
+      return value
+    }
+
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+
+    let number = sut.numberForKey("k", .default)
+
+    XCTAssertEqual(number, 123)
+    XCTAssertEqual(receivedKey, "k")
+    XCTAssertEqual(receivedSource, .default)
+  }
+
+  func testDataForKey() async throws {
+    let remoteConfig = TestRemoteConfig()
+    var receivedKey: String?
+    var receivedSource: RemoteConfigSource?
+
+    remoteConfig._configValue = { key, source in
+      receivedKey = key
+      receivedSource = source
+      let value = TestRemoteConfigValue()
+      value._dataValue = { .init() }
+      return value
+    }
+
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+
+    let data = sut.dataForKey("k", .default)
+
+    XCTAssertEqual(data, .init())
+    XCTAssertEqual(receivedKey, "k")
+    XCTAssertEqual(receivedSource, .default)
+  }
+
+  func testBoolForKey() async throws {
+    let remoteConfig = TestRemoteConfig()
+    var receivedKey: String?
+    var receivedSource: RemoteConfigSource?
+
+    remoteConfig._configValue = { key, source in
+      receivedKey = key
+      receivedSource = source
+      let value = TestRemoteConfigValue()
+      value._boolValue = { true }
+      return value
+    }
+
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+
+    let bool = sut.boolForKey("k", .default)
+
+    XCTAssertEqual(bool, true)
+    XCTAssertEqual(receivedKey, "k")
+    XCTAssertEqual(receivedSource, .default)
+  }
+
+  func testJSONForKey() async throws {
+    let remoteConfig = TestRemoteConfig()
+    var receivedKey: String?
+    var receivedSource: RemoteConfigSource?
+
+    let exampleJSON =
+      try JSONSerialization.jsonObject(with: #"{"test":"test"}"#.data(using: .utf8)!)
+      as? [String: String]
+
+    remoteConfig._configValue = { key, source in
+      receivedKey = key
+      receivedSource = source
+      let value = TestRemoteConfigValue()
+      value._jsonValue = { exampleJSON as Any }
+      return value
+    }
+
+    let sut: FirebaseRemoteConfigClient = .live(remoteConfig: remoteConfig)
+
+    let json = sut.jsonForKey("k", .default) as? [String: String]
+
+    XCTAssertEqual(json, exampleJSON)
+    XCTAssertEqual(receivedKey, "k")
+    XCTAssertEqual(receivedSource, .default)
+  }
 }
