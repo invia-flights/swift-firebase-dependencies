@@ -1,5 +1,5 @@
-public extension Event {
-	struct EarnVirtualCurrency: Equatable {
-		public let value: Money?
-	}
+extension Event {
+  public struct EarnVirtualCurrency: Equatable {
+    public let value: Money?
+  }
 }

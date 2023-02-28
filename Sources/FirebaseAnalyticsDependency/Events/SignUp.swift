@@ -1,5 +1,5 @@
-public extension Event {
-	struct SignUp: Equatable {
-		public let method: String
-	}
+extension Event {
+  public struct SignUp: Equatable {
+    public let method: String
+  }
 }

@@ -1,6 +1,6 @@
-public extension Event {
-	struct Share: Equatable {
-		public let contentType: String
-		public let itemID: String
-	}
+extension Event {
+  public struct Share: Equatable {
+    public let contentType: String
+    public let itemID: String
+  }
 }

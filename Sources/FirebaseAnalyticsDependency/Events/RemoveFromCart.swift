@@ -1,5 +1,5 @@
-public extension Event {
-	struct RemoveFromCart: Equatable {
-		public let value: Money?
-	}
+extension Event {
+  public struct RemoveFromCart: Equatable {
+    public let value: Money?
+  }
 }

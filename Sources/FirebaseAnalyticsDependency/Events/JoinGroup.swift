@@ -1,5 +1,5 @@
-public extension Event {
-	struct JoinGroup: Equatable {
-		public let groupID: String
-	}
+extension Event {
+  public struct JoinGroup: Equatable {
+    public let groupID: String
+  }
 }
