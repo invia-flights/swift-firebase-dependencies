@@ -7,7 +7,7 @@ Configuration and Firebase Analytics, with more features coming soon.
 ## Motivation
 
 The main motivation behind this library is supporting [`Dependencies`](https://github.com/pointfreeco/swift-dependencies). At
-Invia Flights, we’re big fans of [Stephen and Brandon’s work](https://pointfree.co), and we’re
+[Invia Flights](https://www.invia.de/en/careers/), we’re big fans of [Stephen and Brandon’s work](https://pointfree.co), and we’re
 convinced that `Dependencies` is going to turn into the Swift de-facto standard
 for managing dependencies.
 
