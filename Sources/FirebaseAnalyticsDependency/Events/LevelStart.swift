@@ -1,5 +1,5 @@
-extension Event {
-  public struct LevelStart: Equatable {
-    public let levelName: String?
-  }
+public extension Event {
+	struct LevelStart: Equatable {
+		public let levelName: String?
+	}
 }
