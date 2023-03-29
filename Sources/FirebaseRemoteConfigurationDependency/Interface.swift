@@ -37,7 +37,7 @@ public struct FirebaseRemoteConfigClient: Sendable {
 	}
 
 	/// Applies custom fetch settings.
-	let configure: @Sendable (Settings) -> Void
+	public let configure: @Sendable (Settings) -> Void
 
 	/// Sets default configs from plist for default namespace.
 	///
@@ -45,16 +45,16 @@ public struct FirebaseRemoteConfigClient: Sendable {
 	/// file
 	///                 is named `defaultSamples.plist`:
 	///                 `RemoteConfig.remoteConfig().setDefaults(fromPlist: "defaultSamples")`
-	let setDefaultsFromPlist: @Sendable (String?) -> Void
+	public let setDefaultsFromPlist: @Sendable (String?) -> Void
 
 	/// Last successful fetch completion time.
-	let lastFetchTime: @Sendable () -> Date?
+	public let lastFetchTime: @Sendable () -> Date?
 
 	/// Last fetch status. The status can be any enumerated value from `RemoteConfigFetchStatus`.
-	let lastFetchStatus: @Sendable () -> FetchStatus
+	public let lastFetchStatus: @Sendable () -> FetchStatus
 
 	/// Ensures initialization is complete and clients can begin querying for Remote Config values.
-	let ensureInitialized: @Sendable () async throws -> Void
+	public let ensureInitialized: @Sendable () async throws -> Void
 
 	/// Fetches Remote Config data. Call `activate` to make fetched data
 	/// available to your app.
@@ -66,7 +66,7 @@ public struct FirebaseRemoteConfigClient: Sendable {
 	/// and avoid calling this method again.
 	///
 	/// @param completionHandler Fetch operation callback with status and error parameters.
-	let fetch: @Sendable () async throws -> FetchStatus
+	public let fetch: @Sendable () async throws -> FetchStatus
 
 	/// Fetches Remote Config data and sets a duration that specifies how long config data lasts.
 	/// Call `activate` to make fetched data available to your app.
@@ -80,7 +80,7 @@ public struct FirebaseRemoteConfigClient: Sendable {
 	/// @param expirationDuration  Override the (default or optionally set
 	/// property in `configure`) `minimumInterval` for only the current request, in
 	/// seconds. Setting a value of 0 seconds will force a fetch to the backend.
-	let fetchWithExpirationDuration:
+	public let fetchWithExpirationDuration:
 		@Sendable (_ expirationDuration: TimeInterval) async throws -> FetchStatus
 
 	/// Fetches Remote Config data and if successful, activates fetched data. Optional completion
@@ -92,33 +92,33 @@ public struct FirebaseRemoteConfigClient: Sendable {
 	/// `Installations.authToken(completion:)`).
 	/// To stop the periodic sync, call `Installations.delete(completion:)`
 	/// and avoid calling this method again.
-	let fetchAndActivate: @Sendable () async throws -> FetchAndActivateStatus
+	public let fetchAndActivate: @Sendable () async throws -> FetchAndActivateStatus
 
 	/// Applies Fetched Config data to the Active Config, causing updates to the behavior and
 	/// appearance
 	/// of the app to take effect (depending on how config data is used in the app).
 	/// @param completion Activate operation callback with changed and error parameters.
-	let activate: @Sendable () async throws -> Bool
+	public let activate: @Sendable () async throws -> Bool
 
 	/// If present, retrieves a `String` from the remote config storage, optionally specifying the
 	/// `Source`,
-	let stringForKey: @Sendable (String, Source?) -> String?
+	public let stringForKey: @Sendable (String, Source?) -> String?
 
 	/// If present, retrieves an `NSNumber` from the remote config storage, optionally specifying the
 	/// `Source`,
-	let numberForKey: @Sendable (String, Source?) -> NSNumber?
+	public let numberForKey: @Sendable (String, Source?) -> NSNumber?
 
 	/// If present, retrieves a `Data` instance from the remote config storage, optionally specifying
 	/// the `Source`,
-	let dataForKey: @Sendable (String, Source?) -> Data?
+	public let dataForKey: @Sendable (String, Source?) -> Data?
 
 	/// If present, retrieves a`Bool` from the remote config storage, optionally specifying the
 	/// `Source`,
-	let boolForKey: @Sendable (String, Source?) -> Bool?
+	public let boolForKey: @Sendable (String, Source?) -> Bool?
 
 	/// If present, retrieves a`JSONSerialization` instance from the remote config storage, optionally
 	/// specifying the `Source`,
-	let jsonForKey: @Sendable (String, Source?) -> Any?
+	public let jsonForKey: @Sendable (String, Source?) -> Any?
 }
 
 extension FirebaseRemoteConfigClient: TestDependencyKey {
