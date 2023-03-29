@@ -7,7 +7,7 @@ public extension FirebaseRemoteConfigClient {
 			self.minimumFetchInterval = minimumFetchInterval
 			self.fetchTimeout = fetchTimeout
 		}
-		
+
 		/// Indicates the default value in seconds to set for the minimum interval that needs to elapse
 		/// before a fetch request can again be made to the Remote Config backend. After a fetch request
 		/// to
