@@ -3,6 +3,11 @@ import Foundation
 public extension FirebaseRemoteConfigClient {
 	/// A data structure that can be used to configure the fetch settings.
 	struct Settings {
+		public init(minimumFetchInterval: TimeInterval? = nil, fetchTimeout: TimeInterval? = nil) {
+			self.minimumFetchInterval = minimumFetchInterval
+			self.fetchTimeout = fetchTimeout
+		}
+		
 		/// Indicates the default value in seconds to set for the minimum interval that needs to elapse
 		/// before a fetch request can again be made to the Remote Config backend. After a fetch request
 		/// to
