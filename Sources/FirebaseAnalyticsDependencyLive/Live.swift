@@ -11,6 +11,10 @@ public extension FirebaseAnalyticsClient {
 
 			setAnalyticsCollectionEnabled: { enabled in
 				analytics.setAnalyticsCollectionEnabled(enabled)
+			},
+			
+			setUserProperty: { value, name in
+				analytics.setUserProperty(value, forName: name)
 			}
 		)
 	}
