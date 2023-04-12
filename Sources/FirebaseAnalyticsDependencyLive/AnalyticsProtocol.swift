@@ -18,7 +18,7 @@ public struct AnalyticsWrapper: AnalyticsProtocol {
 	public func setAnalyticsCollectionEnabled(_ enabled: Bool) {
 		Analytics.setAnalyticsCollectionEnabled(enabled)
 	}
-	
+
 	public func setUserProperty(_ value: String?, forName name: String) {
 		Analytics.setUserProperty(value, forName: name)
 	}
@@ -40,7 +40,7 @@ struct TestAnalytics: AnalyticsProtocol {
 	func setAnalyticsCollectionEnabled(_ enabled: Bool) {
 		_setAnalyticsCollectionEnabled(enabled)
 	}
-	
+
 	func setUserProperty(_ value: String?, forName name: String) {
 		_setUserProperty(value, name)
 	}
