@@ -11,20 +11,7 @@ public extension Event {
 			case dictionary([String: Value])
 		}
 
-		static let validEventNameRegularExpression =
-			try! NSRegularExpression(pattern: "/^(?!google_|ga_|firebase_)[A-Za-z0-9_]*/gm")
-
-		static func isEventNameValid(_ name: String) -> Bool {
-			let range = NSRange(location: 0, length: name.utf16.count)
-			return Self.validEventNameRegularExpression.firstMatch(in: name, range: range) != nil
-		}
-
-		public init(name: String, parameters: [String: Value?] = [:]) throws {
-			guard Self.isEventNameValid(name) else {
-				struct InvalidName: Error {}
-				throw InvalidName()
-			}
-
+		public init(name: String, parameters: [String: Value?] = [:]) {
 			self.name = name
 			self.parameters = parameters
 		}
