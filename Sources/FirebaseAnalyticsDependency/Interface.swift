@@ -2,20 +2,20 @@ import Dependencies
 import Foundation
 import XCTestDynamicOverlay
 
-public struct FirebaseAnalyticsClient {
+public struct FirebaseAnalyticsClient: Sendable {
 	public init(
-		log: @escaping (Event) async throws -> Void,
-		setAnalyticsCollectionEnabled: @escaping (Bool) -> Void,
-		setUserProperty: @escaping (_ value: String?, _ name: String) -> Void
+		log: @Sendable @escaping (Event) async throws -> Void,
+		setAnalyticsCollectionEnabled: @Sendable @escaping (Bool) -> Void,
+		setUserProperty: @Sendable @escaping (_ value: String?, _ name: String) -> Void
 	) {
 		self.log = log
 		self.setAnalyticsCollectionEnabled = setAnalyticsCollectionEnabled
 		self.setUserProperty = setUserProperty
 	}
 
-	public var log: (Event) async throws -> Void
-	public var setAnalyticsCollectionEnabled: (Bool) -> Void
-	public var setUserProperty: (_ value: String?, _ name: String) -> Void
+	public var log: @Sendable (Event) async throws -> Void
+	public var setAnalyticsCollectionEnabled: @Sendable (Bool) -> Void
+	public var setUserProperty: @Sendable (_ value: String?, _ name: String) -> Void
 }
 
 extension FirebaseAnalyticsClient: TestDependencyKey {

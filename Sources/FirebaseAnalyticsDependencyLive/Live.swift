@@ -3,6 +3,7 @@ import FirebaseAnalytics
 import FirebaseAnalyticsDependency
 
 public extension FirebaseAnalyticsClient {
+	@Sendable
 	static func live(analytics: AnalyticsProtocol = AnalyticsWrapper()) -> Self {
 		.init(
 			log: { event in
