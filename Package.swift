@@ -27,7 +27,7 @@ let package = Package(
 		),
 	],
 	dependencies: [
-		.package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "10.4.0"),
+		.package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "10.14.0"),
 		.package(url: "https://github.com/pointfreeco/swift-dependencies", from: "0.1.4"),
 	],
 	targets: [
