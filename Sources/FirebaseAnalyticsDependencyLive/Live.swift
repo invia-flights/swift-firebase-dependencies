@@ -8,14 +8,17 @@ public extension FirebaseAnalyticsClient {
 		.init(
 			log: { event in
 				analytics.logEvent(event.name, parameters: event.parameters)
+				return event
 			},
 
 			setAnalyticsCollectionEnabled: { enabled in
 				analytics.setAnalyticsCollectionEnabled(enabled)
+				return enabled
 			},
 
 			setUserProperty: { value, name in
 				analytics.setUserProperty(value, forName: name)
+				return (name, value)
 			}
 		)
 	}
