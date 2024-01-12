@@ -28,13 +28,14 @@ let package = Package(
 	],
 	dependencies: [
 		.package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "10.15.0"),
-		.package(url: "https://github.com/pointfreeco/swift-dependencies", from: "0.1.4"),
+		.package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.1.4"),
 	],
 	targets: [
 		.target(
 			name: "FirebaseAnalyticsDependency",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
+				.product(name: "DependenciesMacros", package: "swift-dependencies"),
 			]
 		),
 		.target(
@@ -47,6 +48,7 @@ let package = Package(
 		.target(
 			name: "FirebaseRemoteConfigurationDependency",
 			dependencies: [
+				.product(name: "DependenciesMacros", package: "swift-dependencies"),
 				.product(name: "Dependencies", package: "swift-dependencies"),
 			]
 		),
