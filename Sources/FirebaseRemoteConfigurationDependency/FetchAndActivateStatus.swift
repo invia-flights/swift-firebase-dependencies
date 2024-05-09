@@ -2,7 +2,7 @@ import Foundation
 
 public extension FirebaseRemoteConfigClient {
 	/// Indicates whether updated data was successfully fetched and activated.
-    enum FetchAndActivateStatus: Equatable {
+	enum FetchAndActivateStatus: Equatable {
 		public enum Success {
 			/// The remote fetch succeeded and fetched data was activated.
 			case fetchedFromRemote
