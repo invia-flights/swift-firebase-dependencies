@@ -32,7 +32,7 @@ final class FirebaseAnalyticsTests: XCTestCase {
 		}
 
 		let sut: FirebaseAnalyticsClient = .live(analytics: analytics)
-        _ = try await sut.log(.signUp(.init(method: "Google")))
+		_ = try await sut.log(.signUp(.init(method: "Google")))
 		XCTAssertEqual(receivedEvent, "sign_up")
 		XCTAssertEqual(receivedParameters?["method"] as? String, "Google")
 	}
@@ -47,7 +47,7 @@ final class FirebaseAnalyticsTests: XCTestCase {
 		}
 
 		let sut: FirebaseAnalyticsClient = .live(analytics: analytics)
-        _ = try await sut.log(
+		_ = try await sut.log(
 			.viewPromotion(
 				.init(
 					creativeName: "Summer Sale", creativeSlot: "Banner", items: nil, locationID: nil,
@@ -70,7 +70,7 @@ final class FirebaseAnalyticsTests: XCTestCase {
 		}
 
 		let sut: FirebaseAnalyticsClient = .live(analytics: analytics)
-        _ = try await sut.log(
+		_ = try await sut.log(
 			.selectPromotion(
 				.init(
 					creativeName: "Summer Sale", creativeSlot: "Banner", items: nil, locationID: nil,
@@ -93,7 +93,7 @@ final class FirebaseAnalyticsTests: XCTestCase {
 		}
 
 		let sut: FirebaseAnalyticsClient = .live(analytics: analytics)
-        _ = try await sut.log(
+		_ = try await sut.log(
 			.addToCart(
 				.init(
 					value: .init(amount: 123, currency: "EUR"),
@@ -120,7 +120,7 @@ final class FirebaseAnalyticsTests: XCTestCase {
 		}
 
 		let sut: FirebaseAnalyticsClient = .live(analytics: analytics)
-        _ = try await sut.log(
+		_ = try await sut.log(
 			.addToWishList(
 				.init(
 					value: .init(amount: 123, currency: "EUR"),
@@ -147,7 +147,7 @@ final class FirebaseAnalyticsTests: XCTestCase {
 		}
 
 		let sut: FirebaseAnalyticsClient = .live(analytics: analytics)
-        _ = try await sut.log(
+		_ = try await sut.log(
 			.addPaymentInfo(
 				.init(
 					coupon: "1",
@@ -179,7 +179,7 @@ final class FirebaseAnalyticsTests: XCTestCase {
 		}
 
 		let sut: FirebaseAnalyticsClient = .live(analytics: analytics)
-        _ = try await sut.log(
+		_ = try await sut.log(
 			.addShippingInfo(
 				.init(
 					coupon: "1",
