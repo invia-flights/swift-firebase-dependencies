@@ -24,17 +24,20 @@ public struct FirebaseAnalyticsClient {
 	)
 }
 
-extension FirebaseAnalyticsClient {
-    public func custom(_ eventable: any Eventable) async throws -> Event {
-        let event: Event = .custom(Event.Custom.build(from: eventable))
-        return try await self.log(event)
-    }
+public extension FirebaseAnalyticsClient {
+	func custom(_ eventable: any Eventable) async throws -> Event {
+		let event: Event = .custom(Event.Custom.build(from: eventable))
+		return try await log(event)
+	}
 }
 
 extension FirebaseAnalyticsClient: TestDependencyKey {
 	public static var testValue: FirebaseAnalyticsClient = .init(
 		log: unimplemented("log"),
-        setAnalyticsCollectionEnabled: unimplemented("setAnalyticsCollectionEnabled", placeholder: false),
+		setAnalyticsCollectionEnabled: unimplemented(
+			"setAnalyticsCollectionEnabled",
+			placeholder: false
+		),
 		setUserProperty: unimplemented("setUserProperty", placeholder: ("", nil))
 	)
 }
