@@ -10,6 +10,10 @@ public extension FirebaseAnalyticsClient {
 				analytics.logEvent(event.name, parameters: event.parameters)
 				return event
 			},
+            
+            custom: { event in
+                .custom(Event.Custom.build(from: event))
+            },
 
 			setAnalyticsCollectionEnabled: { enabled in
 				analytics.setAnalyticsCollectionEnabled(enabled)
@@ -128,7 +132,7 @@ func transform(_ elements: [Event.Custom.Value]) -> [Any] {
 	elements.compactMap { transform($0) }
 }
 
-func transform(_ dict: [String: Event.Custom.Value?]) -> [String: Any] {
+func eraseTypes(of dict: [String: Event.Custom.Value?]) -> [String: Any] {
 	dict.compactMapValues {
 		guard let value = $0 else {
 			return nil
@@ -142,7 +146,7 @@ extension Event {
 	var parameters: [String: Any]? {
 		switch self {
 		case let .custom(custom):
-			return transform(custom.parameters)
+            return eraseTypes(of: custom.parameters)
 		case let .adImpression(adImpression):
 			return adImpression.parameters
 		case let .addPaymentInfo(addPaymentInfo):
