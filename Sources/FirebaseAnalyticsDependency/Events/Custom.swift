@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol Eventable {
+public protocol Eventable: Equatable {
 	associatedtype Parameters: Encodable & Equatable
 	var name: String { get }
 	var parameters: Parameters { get }
