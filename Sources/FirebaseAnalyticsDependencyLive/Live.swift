@@ -12,9 +12,9 @@ public extension FirebaseAnalyticsClient {
 			},
 
 			custom: { event in
-                let event: Event = .custom(Event.Custom.build(from: event))
-                analytics.logEvent(event.name, parameters: event.parameters)
-                return event
+				let event: Event = .custom(Event.Custom.build(from: event))
+				analytics.logEvent(event.name, parameters: event.parameters)
+				return event
 			},
 
 			setAnalyticsCollectionEnabled: { enabled in
