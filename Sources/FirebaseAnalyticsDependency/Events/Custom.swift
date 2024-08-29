@@ -27,7 +27,7 @@ public extension Event {
 
 		static var encoder: ParametersEncoder = .init()
 
-		static func build(from eventable: any Eventable) -> Self {
+		public static func build(from eventable: any Eventable) -> Self {
 			let parameters = try? encoder.encode(eventable.parameters)
 			return .init(name: eventable.name, parameters: parameters ?? [:])
 		}
