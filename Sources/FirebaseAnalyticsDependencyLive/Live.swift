@@ -10,10 +10,10 @@ public extension FirebaseAnalyticsClient {
 				analytics.logEvent(event.name, parameters: event.parameters)
 				return event
 			},
-            
-            custom: { event in
-                .custom(Event.Custom.build(from: event))
-            },
+
+			custom: { event in
+				.custom(Event.Custom.build(from: event))
+			},
 
 			setAnalyticsCollectionEnabled: { enabled in
 				analytics.setAnalyticsCollectionEnabled(enabled)
@@ -146,7 +146,7 @@ extension Event {
 	var parameters: [String: Any]? {
 		switch self {
 		case let .custom(custom):
-            return eraseTypes(of: custom.parameters)
+			return eraseTypes(of: custom.parameters)
 		case let .adImpression(adImpression):
 			return adImpression.parameters
 		case let .addPaymentInfo(addPaymentInfo):
