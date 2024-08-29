@@ -1,9 +1,9 @@
 import Foundation
 
 public protocol Eventable {
-    associatedtype Parameters: Encodable & Equatable
-    var name: String { get }
-    var parameters: Parameters { get }
+	associatedtype Parameters: Encodable & Equatable
+	var name: String { get }
+	var parameters: Parameters { get }
 }
 
 public extension Event {
@@ -24,12 +24,12 @@ public extension Event {
 
 		public let name: String
 		public let parameters: [String: Value?]
-        
-        static var encoder: ParametersEncoder = .init()
-        
-        static func build(from eventable: any Eventable) -> Self {
-            let parameters = try? encoder.encode(eventable.parameters)
-            return .init(name: eventable.name, parameters: parameters ?? [:])
-        }
-    }
+
+		static var encoder: ParametersEncoder = .init()
+
+		static func build(from eventable: any Eventable) -> Self {
+			let parameters = try? encoder.encode(eventable.parameters)
+			return .init(name: eventable.name, parameters: parameters ?? [:])
+		}
+	}
 }
