@@ -2,37 +2,40 @@ import Dependencies
 import Foundation
 import XCTestDynamicOverlay
 
-public struct FirebaseAnalyticsClient: Sendable {
+public struct FirebaseAnalyticsClient {
 	public init(
-		log: @Sendable @escaping (Event) async throws -> Event,
-		custom: @Sendable @escaping (any Eventable) async throws -> Event,
-		setAnalyticsCollectionEnabled: @Sendable @escaping (Bool) -> Bool,
-		setUserProperty: @Sendable @escaping (_ value: String?, _ name: String) -> (
+		log: @escaping (Event) async throws -> Event,
+		setAnalyticsCollectionEnabled: @escaping (Bool) -> Bool,
+		setUserProperty: @escaping (_ value: String?, _ name: String) -> (
 			name: String,
 			value: String?
 		)
 	) {
 		self.log = log
-		self.custom = custom
 		self.setAnalyticsCollectionEnabled = setAnalyticsCollectionEnabled
 		self.setUserProperty = setUserProperty
 	}
 
-	public var log: @Sendable (Event) async throws -> Event
-	public var custom: @Sendable (any Eventable) async throws -> Event
-	public var setAnalyticsCollectionEnabled: @Sendable (Bool) -> Bool
-	public var setUserProperty: @Sendable (_ value: String?, _ name: String) -> (
+	public var log: (Event) async throws -> Event
+	public var setAnalyticsCollectionEnabled: (Bool) -> Bool
+	public var setUserProperty: (_ value: String?, _ name: String) -> (
 		name: String,
 		value: String?
 	)
 }
 
+extension FirebaseAnalyticsClient {
+    public func custom(_ eventable: any Eventable) async throws -> Event {
+        let event: Event = .custom(Event.Custom.build(from: eventable))
+        return try await self.log(event)
+    }
+}
+
 extension FirebaseAnalyticsClient: TestDependencyKey {
 	public static var testValue: FirebaseAnalyticsClient = .init(
 		log: unimplemented("log"),
-		custom: unimplemented("custom"),
-		setAnalyticsCollectionEnabled: unimplemented("setAnalyticsCollectionEnabled"),
-		setUserProperty: unimplemented("setUserProperty")
+        setAnalyticsCollectionEnabled: unimplemented("setAnalyticsCollectionEnabled", placeholder: false),
+		setUserProperty: unimplemented("setUserProperty", placeholder: ("", nil))
 	)
 }
 

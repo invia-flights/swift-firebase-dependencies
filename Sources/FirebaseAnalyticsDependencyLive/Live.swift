@@ -3,18 +3,11 @@ import FirebaseAnalytics
 import FirebaseAnalyticsDependency
 
 public extension FirebaseAnalyticsClient {
-	@Sendable
 	static func live(analytics: AnalyticsProtocol = AnalyticsWrapper()) -> Self {
 		.init(
 			log: { event in
 				analytics.logEvent(event.name, parameters: event.parameters)
 				return event
-			},
-
-			custom: { event in
-                let event: Event = .custom(Event.Custom.build(from: event))
-                analytics.logEvent(event.name, parameters: event.parameters)
-                return event
 			},
 
 			setAnalyticsCollectionEnabled: { enabled in
